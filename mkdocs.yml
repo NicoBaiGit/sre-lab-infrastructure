@@ -41,5 +41,6 @@ markdown_extensions:
 
 nav:
   - Accueil: index.md
+  - WSL: wsl.md
   - Guide Lab SRE: setup-lab.md
   - Configuration Serveur: ubuntu-server.md
