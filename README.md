@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # SRE Lab Infrastructure Documentation
 
 Ce dépôt contient la documentation et les configurations pour mon laboratoire SRE personnel.
@@ -40,6 +39,3 @@ Pour construire les fichiers HTML statiques :
 ```bash
 make build
 ```
-=======
-# sre-lab-infrastructure
->>>>>>> 20496013a762ae591202d17f343e39ba04bc1428
