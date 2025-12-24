@@ -47,7 +47,13 @@ rm -rf kube-ps1-0.9.0 v0.9.0.tar.gz
 ```
 
 ### Modification du .bashrc
-Ajoutez le contenu suivant à la fin de votre fichier `~/.bashrc` pour configurer les alias, le prompt et l'agent SSH.
+
+Il existe deux façons de gérer vos alias et configurations :
+
+1.  **Méthode Centralisée (Ma configuration)** : Je charge mes alias depuis mon NAS pour les partager entre WSL et mes serveurs (voir [Section 7](#7-centralisation-des-alias-nas)).
+2.  **Méthode Autonome (Pour démarrer)** : Vous pouvez tout configurer localement en utilisant le script fourni (voir [Section 6](#6-script-dautomatisation)) ou en copiant le bloc ci-dessous.
+
+Voici le contenu de référence (ajouté automatiquement par le script) :
 
 ```bash
 # --- Configuration SRE ---
@@ -131,14 +137,36 @@ wsl --export Ubuntu C:\Sauvegardes\wsl_backup_ubuntu.tar
 wsl --import UbuntuRestored C:\WSL\UbuntuRestored C:\Sauvegardes\wsl_backup_ubuntu.tar
 ```
 
-## 6. Script d'automatisation
+## 7. Centralisation des Alias (NAS)
 
-Un script interactif est disponible pour réaliser les étapes 2, 3 et 4 automatiquement.
+Pour partager vos alias entre plusieurs machines (WSL, Serveur Ubuntu, etc.), vous pouvez stocker un fichier de configuration sur un NAS.
 
-1.  Créez le fichier `setup_wsl.sh`.
-2.  Copiez le contenu du script `scripts/setup_wsl_env.sh`.
-3.  Exécutez :
+### Configuration WSL (Montage)
+
+WSL monte automatiquement les lecteurs réseaux Windows s'ils sont mappés, mais un montage manuel est plus robuste.
+
+1.  **Créer le point de montage** :
     ```bash
-    chmod +x setup_wsl.sh
-    ./setup_wsl.sh
+    sudo mkdir -p /mnt/nas
     ```
+
+2.  **Monter le partage** (remplacez l'IP et le chemin) :
+    ```bash
+    sudo mount -t drvfs '\\192.168.1.X\work' /mnt/nas
+    ```
+
+### Chargement automatique
+
+Ajoutez ceci à la fin de votre `.bashrc` pour charger les alias s'ils sont disponibles :
+
+```bash
+# --- Chargement des alias depuis le NAS ---
+NAS_ALIAS_FILE="/mnt/nas/alias.sh"
+
+if [ -f "$NAS_ALIAS_FILE" ]; then
+    source "$NAS_ALIAS_FILE"
+    echo "✅ Alias NAS chargés."
+else
+    echo "⚠️  NAS non accessible : Alias non chargés."
+fi
+```

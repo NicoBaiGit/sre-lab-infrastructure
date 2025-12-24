@@ -97,7 +97,61 @@ Si connecté en Ethernet :
 sudo nmcli radio wifi off
 ```
 
-## 6. Installation de Kubernetes (K3s)
+## 6. Montage NAS Sécurisé (Pour Alias & Data)
+
+Pour accéder à des fichiers partagés (ex: scripts d'alias centralisés) de manière sécurisée.
+
+### Installation des outils
+```bash
+sudo apt-get update && sudo apt-get install -y cifs-utils
+```
+
+### Sécurisation des identifiants
+Ne jamais mettre de mot de passe en clair dans `/etc/fstab`. Utilisez un fichier de credentials protégé.
+
+> **Bonne pratique** : Créez un utilisateur dédié sur votre NAS (ex: `svc_linux`) avec des droits limités uniquement au dossier partagé `work` (lecture seule ou lecture/écriture selon besoin), plutôt que d'utiliser votre compte administrateur principal.
+
+1.  **Créer le fichier** :
+    ```bash
+    nano ~/.smbcredentials
+    ```
+2.  **Ajouter le contenu** :
+    ```ini
+    username=svc_linux
+    password=votre_mot_de_passe_dedie
+    domain=WORKGROUP
+    ```
+3.  **Protéger le fichier** (lecture seule pour vous uniquement) :
+    ```bash
+    chmod 600 ~/.smbcredentials
+    ```
+
+### Configuration du montage (fstab)
+
+1.  **Créer le point de montage** :
+    ```bash
+    sudo mkdir -p /mnt/nas
+    ```
+
+2.  **Éditer fstab** :
+    ```bash
+    sudo nano /etc/fstab
+    ```
+    Ajouter la ligne suivante (remplacez l'IP et le chemin) :
+    ```text
+    //192.168.1.X/work /mnt/nas cifs credentials=/home/votre_user/.smbcredentials,iocharset=utf8,vers=3.0,noperm 0 0
+    ```
+
+3.  **Tester** :
+    ```bash
+    sudo mount -a
+    ls /mnt/nas
+    ```
+
+### Chargement des Alias
+Ajoutez le même bloc de code dans votre `.bashrc` que pour WSL (voir section WSL) pour charger `alias.sh`.
+
+## 7. Installation de Kubernetes (K3s)
 
 Installation en une commande (plus léger que MicroK8s) :
 
