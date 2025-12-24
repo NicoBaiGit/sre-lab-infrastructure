@@ -63,6 +63,7 @@ Pour utiliser le portable comme un serveur (capot fermé, écran éteint, écono
 
 ### Ignorer la fermeture du capot
 
+**Méthode 1 (Standard) :**
 Éditer `/etc/systemd/logind.conf` :
 
 ```ini
@@ -71,6 +72,14 @@ HandleLidSwitchExternalPower=ignore
 HandleLidSwitchDocked=ignore
 ```
 Puis : `sudo systemctl restart systemd-logind`
+
+**Méthode 2 (Radicale - Si la méthode 1 échoue) :**
+Si le T420 s'obstine à dormir (LED lune allumée), désactivez totalement la capacité de mise en veille du système :
+
+```bash
+sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
+```
+*Pour revenir en arrière un jour : remplacer `mask` par `unmask`.*
 
 ### Éteindre l'écran (Console Blanking)
 
