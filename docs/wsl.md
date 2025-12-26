@@ -31,22 +31,44 @@ Mettez à jour le système et installez les paquets nécessaires (utilisés par 
 sudo apt-get update && sudo apt-get install -y wget git
 ```
 
-## 3. Configuration du Shell (.bashrc)
+## 3. Configuration Automatisée (Recommandé)
 
-Cette section couvre les alias, le prompt Kubernetes (`kube-ps1`) et l'agent SSH.
+Nous avons créé un script qui configure automatiquement :
+*   Les dépendances (Git, Wget).
+*   Le prompt **Starship** (remplace kube-ps1 pour une meilleure performance et intégration Git/K8s).
+*   Les alias centralisés (chargés depuis le NAS ou Git).
+*   La configuration SSH (récupération des clés depuis Windows).
+*   La configuration Git.
 
-### Installation de kube-ps1
-Outil pour afficher le contexte Kubernetes dans le prompt.
+Lancez simplement :
 
 ```bash
-wget https://github.com/jonmosco/kube-ps1/archive/refs/tags/v0.9.0.tar.gz
-tar xzvf v0.9.0.tar.gz
-sudo cp kube-ps1-0.9.0/kube-ps1.sh /usr/local/bin/
-sudo chmod +x /usr/local/bin/kube-ps1.sh
-rm -rf kube-ps1-0.9.0 v0.9.0.tar.gz
+~/github/sre-lab-infrastructure/scripts/setup_wsl_env.sh
 ```
 
-### Modification du .bashrc
+> **Note :** Ce script configure votre `.bashrc` pour charger les configurations centralisées.
+
+## 4. Configuration Manuelle (Référence)
+
+Si vous préférez configurer manuellement ou comprendre ce que fait le script.
+
+### Installation de Starship
+Starship est un prompt cross-shell rapide et personnalisable.
+
+```bash
+curl -sS https://starship.rs/install.sh | sh -s -- -y
+```
+
+### Configuration du .bashrc
+
+Ajoutez ceci à votre `.bashrc` pour charger Starship et les alias :
+
+```bash
+# --- Starship & Alias ---
+eval "$(starship init bash)"
+[ -f "/mnt/nas/aliases.sh" ] && source "/mnt/nas/aliases.sh"
+```
+
 
 Il existe deux façons de gérer vos alias et configurations :
 
@@ -147,26 +169,191 @@ WSL monte automatiquement les lecteurs réseaux Windows s'ils sont mappés, mais
 
 1.  **Créer le point de montage** :
     ```bash
-    sudo mkdir -p /mnt/nas
-    ```
+## 6. Montage NAS (Script Automatisé)
 
-2.  **Monter le partage** (remplacez l'IP et le chemin) :
-    ```bash
-    sudo mount -t drvfs '\\192.168.1.X\work' /mnt/nas
-    ```
+Pour accéder aux fichiers partagés et aux alias centralisés, nous utilisons un script qui configure automatiquement le montage du NAS (compatible WSL et Ubuntu Server).
 
-### Chargement automatique
+### Script `setup_nas.sh`
 
-Ajoutez ceci à la fin de votre `.bashrc` pour charger les alias s'ils sont disponibles :
+Ce script gère :
+*   L'installation des dépendances (`cifs-utils`).
+*   La création sécurisée du fichier d'identifiants (`~/.smbcredentials`).
+*   La détection de l'environnement (WSL vs Linux Natif).
+*   La configuration persistante dans `/etc/fstab`.
+
+**Utilisation :**
+```bash
+./scripts/setup_nas.sh
+```
+
+## 7. Centralisation des Alias (Git + NAS)
+
+Pour maintenir une configuration cohérente entre WSL et le serveur T420, nous utilisons une approche "GitOps" :
+1.  **Source de vérité** : Le fichier `shell/aliases.sh` dans le dépôt Git.
+2.  **Distribution** : Le NAS sert de point de partage.
+3.  **Consommation** : WSL et le T420 chargent le fichier depuis le NAS (ou Git localement).
+
+### 1. Création du fichier d'alias
+Créez `shell/aliases.sh` dans votre projet :
 
 ```bash
-# --- Chargement des alias depuis le NAS ---
-NAS_ALIAS_FILE="/mnt/nas/alias.sh"
+# --- SRE Lab Utils ---
+alias bye='~/SCRIPTS/stop_lab; exit'
+alias start_lab='~/SCRIPTS/start_lab'
 
-if [ -f "$NAS_ALIAS_FILE" ]; then
+# Fonction pour déployer les alias sur le NAS
+deploy_aliases() {
+    cp "$HOME/github/sre-lab-infrastructure/shell/aliases.sh" "/mnt/nas/aliases.sh"
+    echo "✅ Alias déployés sur le NAS (/mnt/nas/aliases.sh)"
+}
+
+# --- System ---
+alias update='sudo apt update && sudo apt upgrade -y'
+# ... ajoutez vos autres alias ici ...
+```
+
+### 2. Configuration WSL (.bashrc)
+Ajoutez ceci à votre `~/.bashrc` pour charger les alias (priorité au Git local) :
+
+```bash
+# --- Chargement des alias centralisés (SRE Lab) ---
+NAS_ALIAS_FILE="/mnt/nas/aliases.sh"
+LOCAL_ALIAS_FILE="$HOME/github/sre-lab-infrastructure/shell/aliases.sh"
+
+if [ -f "$LOCAL_ALIAS_FILE" ]; then
+    # Priorité au fichier local (Git) si on est dans le repo
+    source "$LOCAL_ALIAS_FILE"
+elif [ -f "$NAS_ALIAS_FILE" ]; then
+    # Sinon on charge depuis le NAS
     source "$NAS_ALIAS_FILE"
-    echo "✅ Alias NAS chargés."
-else
-    echo "⚠️  NAS non accessible : Alias non chargés."
 fi
 ```
+
+### 3. Configuration T420 (.bashrc)
+Sur le serveur, ajoutez ceci pour charger les alias depuis le NAS :
+
+```bash
+# --- Chargement des alias centralisés (SRE Lab) ---
+NAS_ALIAS_FILE="/mnt/nas/aliases.sh"
+if [ -f "$NAS_ALIAS_FILE" ]; then
+    source "$NAS_ALIAS_FILE"
+fi
+```
+
+### Workflow de mise à jour
+1.  Modifiez `shell/aliases.sh` dans VS Code.
+2.  Testez sur WSL (ouvrez un nouveau terminal).
+3.  Déployez sur le NAS :
+    ```bash
+    deploy_aliases
+    ```
+4.  Le T420 aura les nouveaux alias à sa prochaine connexion.
+
+
+## 5. Workflow SRE (Démarrage & Arrêt)
+
+Pour simplifier l'utilisation du lab, nous utilisons des scripts automatisés pour gérer le cycle de vie du serveur T420.
+
+### Script de Démarrage (`start_lab.sh`)
+
+Ce script utilise PowerShell (depuis WSL) pour envoyer le "Magic Packet" WoL, car le broadcast UDP est bloqué par le NAT de WSL2.
+
+Fichier : `~/scripts/start_lab.sh`
+
+```bash
+#!/bin/bash
+
+# Configuration
+MAC_ADDR="00:21:CC:70:E9:BA"      # MAC Ethernet du T420
+SERVER_IP="192.168.1.120"         # IP Statique du T420
+SSH_USER="nicolab"
+
+echo "=== Démarrage de la Session Lab SRE ==="
+
+# 1. Démarrage du serveur (Wake-on-LAN via PowerShell)
+echo "[1/3] Envoi du Magic Packet (WoL)..."
+powershell.exe -Command "
+\$mac = '$MAC_ADDR'
+\$macBytes = \$mac -split '[:-]' | ForEach-Object { [byte]('0x' + \$_) }
+\$packet = [byte[]](,0xFF * 6) + \$macBytes * 16
+\$client = New-Object System.Net.Sockets.UdpClient
+\$client.Connect(([System.Net.IPAddress]::Broadcast), 9)
+\$client.Send(\$packet, \$packet.Length)
+\$client.Close()
+"
+
+# 2. Attente de la disponibilité
+echo "[2/3] Attente du démarrage du serveur ($SERVER_IP)..."
+START_TIME=$(date +%s)
+TIMEOUT=120 
+
+while ! ping -c 1 -W 1 "$SERVER_IP" &> /dev/null; do
+    CURRENT_TIME=$(date +%s)
+    ELAPSED=$((CURRENT_TIME - START_TIME))
+    if [ $ELAPSED -gt $TIMEOUT ]; then
+        echo "Erreur : Timeout."
+        exit 1
+    fi
+    printf "."
+    sleep 1
+done
+
+echo ""
+echo "[3/3] Serveur prêt !"
+echo "-------------------------------------------------------"
+echo "IP : $SERVER_IP"
+echo "SSH : ssh $SSH_USER@$SERVER_IP"
+echo "-------------------------------------------------------"
+```
+
+### Script d'Arrêt (`stop_lab.sh`)
+
+Ce script éteint proprement le serveur via SSH.
+
+Fichier : `~/scripts/stop_lab.sh`
+
+```bash
+#!/bin/bash
+SERVER_IP="192.168.1.120"
+SSH_USER="nicolab"
+
+echo "=== Arrêt du Lab SRE ==="
+if ping -c 1 -W 1 "$SERVER_IP" &> /dev/null; then
+    echo "Envoi de l'ordre d'extinction..."
+    ssh -o ConnectTimeout=5 "$SSH_USER@$SERVER_IP" "sudo shutdown -h now"
+else
+    echo "Le serveur est déjà éteint ou inaccessible."
+fi
+```
+
+### Installation des Raccourcis et Alias
+
+Pour une utilisation fluide, nous créons des raccourcis et un alias `bye`.
+
+1.  **Créer le dossier de scripts et les liens symboliques :**
+    ```bash
+    mkdir -p ~/SCRIPTS
+    ln -sf ~/github/sre-lab-infrastructure/scripts/start_lab.sh ~/SCRIPTS/start_lab
+    ln -sf ~/github/sre-lab-infrastructure/scripts/stop_lab.sh ~/SCRIPTS/stop_lab
+    chmod +x ~/github/sre-lab-infrastructure/scripts/*.sh
+    ```
+
+2.  **Configurer l'alias `bye` dans `.bashrc` :**
+    Ajoutez cette ligne à la fin de votre `~/.bashrc` :
+    ```bash
+    alias bye='~/SCRIPTS/stop_lab; exit'
+    ```
+    Rechargez la configuration : `source ~/.bashrc`
+
+### Utilisation Quotidienne
+
+1.  **Démarrer le lab :**
+    ```bash
+    ~/SCRIPTS/start_lab
+    ```
+2.  **Travailler...**
+3.  **Finir la session (Éteindre et fermer) :**
+    ```bash
+    bye
+    ```
+

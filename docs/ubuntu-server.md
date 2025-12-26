@@ -38,9 +38,21 @@ Une fois le serveur redémarré, tout se gère depuis votre poste de travail (ex
 ssh-copy-id -i ~/.ssh/id_rsa.pub nicolab@<IP-DU-T420>
 ```
 
-### Script d'initialisation (init-t420.sh)
+### Configuration de l'environnement (Starship + Alias)
 
-Créer et lancer ce script pour préparer la machine pour Kubernetes :
+Une fois le NAS monté (voir `setup_nas.sh`), vous pouvez configurer l'environnement shell standardisé (Prompt Starship + Alias centralisés) en lançant :
+
+```bash
+~/github/sre-lab-infrastructure/scripts/setup_server_env.sh
+```
+
+Ce script va :
+1.  Installer **Starship**.
+2.  Configurer `.bashrc` pour utiliser la configuration centralisée sur le NAS.
+
+### Script d'initialisation système (init-t420.sh)
+
+Pour les outils système de base (avant l'environnement shell), vous pouvez utiliser ce script :
 
 ```bash
 #!/bin/bash
@@ -151,7 +163,68 @@ Ne jamais mettre de mot de passe en clair dans `/etc/fstab`. Utilisez un fichier
 ### Chargement des Alias
 Ajoutez le même bloc de code dans votre `.bashrc` que pour WSL (voir section WSL) pour charger `alias.sh`.
 
-## 7. Installation de Kubernetes (K3s)
+## 7. Configuration Wake-on-LAN (Requis)
+
+Pour que les scripts de démarrage (`start_lab.sh`) fonctionnent, le Wake-on-LAN (WoL) doit être correctement configuré sur le serveur.
+
+⚠️ **Important** : Le Wake-on-LAN (WoL) nécessite impérativement une connexion **Ethernet filaire**. Le Wi-Fi du T420 ne supporte pas le réveil depuis l'extinction complète.
+
+### 1. Configuration Réseau (Ethernet + Wi-Fi)
+Si vous avez installé Ubuntu en Wi-Fi, l'interface Ethernet est peut-être inactive. Il faut la configurer via Netplan pour qu'elle obtienne une IP (nécessaire pour le WoL).
+
+Éditer le fichier de config (ex: `/etc/netplan/50-cloud-init.yaml`) :
+```yaml
+network:
+    version: 2
+    ethernets:
+        enp0s25:
+            dhcp4: true
+            optional: true
+    wifis:
+        wlp3s0:
+            # ... votre config wifi existante ...
+```
+Puis appliquer : `sudo netplan apply`.
+
+### 2. Configuration du BIOS (T420)
+*   Redémarrer et appuyer sur `F1`.
+*   Aller dans **Config > Network > Wake On LAN**.
+*   Régler sur **AC and Battery** (ou AC Only).
+*   Sauvegarder (`F10`).
+
+### 3. Configuration Ubuntu (Persistante)
+Par défaut, Ubuntu peut désactiver le WoL au prochain redémarrage. Il faut le forcer.
+
+*   **Vérifier l'état actuel** :
+    ```bash
+    sudo ethtool enp0s25 | grep Wake-on
+    # Doit afficher : Wake-on: g
+    ```
+
+*   **Activer et rendre persistant** :
+    Créer un service systemd : `sudo nano /etc/systemd/system/wol.service`
+
+    ```ini
+    [Unit]
+    Description=Enable Wake-on-LAN
+    After=network.target
+
+    [Service]
+    Type=oneshot
+    ExecStart=/sbin/ethtool -s enp0s25 wol g
+
+    [Install]
+    WantedBy=multi-user.target
+    ```
+
+*   **Activer le service** :
+    ```bash
+    sudo systemctl daemon-reload
+    sudo systemctl enable wol.service
+    sudo systemctl start wol.service
+    ```
+
+## 8. Installation de Kubernetes (K3s)
 
 Installation en une commande (plus léger que MicroK8s) :
 

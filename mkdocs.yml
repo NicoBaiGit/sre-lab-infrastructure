@@ -6,27 +6,38 @@ site_author: Nicolas Bailleul
 theme:
   name: material
   language: fr
+  logo: material/server-network
+  favicon: material/server-network
   palette:
-    - scheme: default
-      primary: indigo
-      accent: indigo
-      toggle:
-        icon: material/brightness-7
-        name: Switch to dark mode
+    # Dark mode by default (SRE Style)
     - scheme: slate
-      primary: indigo
-      accent: indigo
+      primary: teal
+      accent: deep-purple
       toggle:
         icon: material/brightness-4
-        name: Switch to light mode
+        name: Passer en mode clair
+    # Light mode option
+    - scheme: default
+      primary: teal
+      accent: deep-purple
+      toggle:
+        icon: material/brightness-7
+        name: Passer en mode sombre
   features:
     - navigation.tabs
+    - navigation.tabs.sticky
     - navigation.sections
+    - navigation.expand
     - navigation.top
+    - navigation.tracking
     - toc.integrate
     - search.suggest
     - search.highlight
     - content.code.copy
+    - content.action.edit
+
+extra_css:
+  - stylesheets/extra.css
 
 markdown_extensions:
   - admonition
@@ -38,9 +49,13 @@ markdown_extensions:
   - pymdownx.snippets
   - attr_list
   - md_in_html
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
 
 nav:
   - Accueil: index.md
-  - WSL: wsl.md
-  - Guide Lab SRE: setup-lab.md
-  - Configuration Serveur: ubuntu-server.md
+  - 01. Poste de Travail (WSL): wsl.md
+  - 02. Le Serveur (T420): ubuntu-server.md
+  - 03. Guide du Lab SRE: setup-lab.md
+
