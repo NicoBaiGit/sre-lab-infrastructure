@@ -50,6 +50,11 @@ deploy_env() {
     # 2. Starship Config
     cp "$HOME/github/sre-lab-infrastructure/config/starship.toml" "/mnt/nas/starship.toml"
     echo "   ✅ Config Starship copiée (/mnt/nas/starship.toml)"
+
+    # 3. Scripts d'installation (Kit de déploiement)
+    cp "$HOME/github/sre-lab-infrastructure/scripts/setup_shell_minimal.sh" "/mnt/nas/setup_shell_minimal.sh"
+    cp "$HOME/github/sre-lab-infrastructure/scripts/setup_nas.sh" "/mnt/nas/setup_nas.sh"
+    echo "   ✅ Scripts d'installation copiés (/mnt/nas/setup_*.sh)"
     
     echo "🚀 Déploiement terminé."
 }
