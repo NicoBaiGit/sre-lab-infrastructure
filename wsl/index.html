@@ -1,0 +1,1337 @@
+
+<!doctype html>
+<html lang="fr" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation du Lab SRE personnel">
+      
+      
+        <meta name="author" content="Nicolas Bailleul">
+      
+      
+        <link rel="canonical" href="https://NicoBaiGit.github.io/sre-lab-infrastructure/wsl/">
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../workstation-management/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Configuration WSL - SRE Lab Infrastructure</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="deep-purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#configuration-wsl-pour-sre" class="md-skip">
+          Aller au contenu
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="En-tête">
+    <a href=".." title="SRE Lab Infrastructure" class="md-header__button md-logo" aria-label="SRE Lab Infrastructure" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SRE Lab Infrastructure
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Configuration WSL
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="deep-purple"  aria-label="Passer en mode clair"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Passer en mode clair" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="deep-purple"  aria-label="Passer en mode sombre"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Passer en mode sombre" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Rechercher" placeholder="Rechercher" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Recherche">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Effacer" aria-label="Effacer" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initialisation de la recherche
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Onglets" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Accueil
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+  Poste de Travail
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../ubuntu-server/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Serveur
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../setup-lab/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Lab SRE
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="SRE Lab Infrastructure" class="md-nav__button md-logo" aria-label="SRE Lab Infrastructure" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    SRE Lab Infrastructure
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Accueil
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Poste de Travail
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Poste de Travail
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration WSL
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration WSL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table des matières">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table des matières
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-prerequis-et-optimisation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Prérequis et Optimisation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Prérequis et Optimisation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#optimisation-ram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optimisation RAM
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gestion-des-privileges-sudoers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gestion des privilèges (Sudoers)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-mise-a-jour-et-dependances" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Mise à jour et Dépendances
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-configuration-automatisee-recommande" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Configuration Automatisée (Recommandé)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-configuration-multi-wsl-linux-via-nas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Configuration Multi-WSL / Linux (Via NAS)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Configuration Multi-WSL / Linux (Via NAS)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prerequis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prérequis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#installation-sur-la-nouvelle-machine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation sur la nouvelle machine
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-configuration-manuelle-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Configuration Manuelle (Référence)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Configuration Manuelle (Référence)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#installation-de-starship" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation de Starship
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration-du-bashrc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration du .bashrc
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-configuration-ssh-et-git" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Configuration SSH et Git
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Configuration SSH et Git">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#copie-des-cles-depuis-windows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Copie des clés depuis Windows
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fichier-config-ssh" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fichier Config SSH
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration-git" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration Git
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-sauvegarde-de-la-session-wsl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Sauvegarde de la session WSL
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-centralisation-des-alias-nas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Centralisation des Alias (NAS)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Centralisation des Alias (NAS)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuration-wsl-montage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration WSL (Montage)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-montage-nas-script-automatise" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Montage NAS (Script Automatisé)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Montage NAS (Script Automatisé)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#script-setup_nassh" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Script setup_nas.sh
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-centralisation-des-alias-git-nas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Centralisation des Alias (Git + NAS)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Centralisation des Alias (Git + NAS)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-creation-du-fichier-dalias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Création du fichier d'alias
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-configuration-wsl-bashrc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Configuration WSL (.bashrc)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-configuration-t420-bashrc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Configuration T420 (.bashrc)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workflow-de-mise-a-jour" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflow de mise à jour
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-workflow-sre-demarrage-arret" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Workflow SRE (Démarrage &amp; Arrêt)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Workflow SRE (Démarrage &amp; Arrêt)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#script-de-demarrage-start_labsh" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Script de Démarrage (start_lab.sh)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#script-darret-stop_labsh" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Script d'Arrêt (stop_lab.sh)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#installation-des-raccourcis-et-alias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation des Raccourcis et Alias
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#utilisation-quotidienne" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Utilisation Quotidienne
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workstation-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gestion Environnement
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ubuntu-server/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Serveur
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../setup-lab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab SRE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="configuration-wsl-pour-sre">Configuration WSL pour SRE</h1>
+<p>Cette page documente les bonnes pratiques et la configuration recommandée pour un environnement de travail WSL (Windows Subsystem for Linux) optimisé pour un SRE.</p>
+<h2 id="1-prerequis-et-optimisation">1. Prérequis et Optimisation</h2>
+<p>Avant de lancer la configuration logicielle, il est recommandé d'optimiser l'instance WSL.</p>
+<h3 id="optimisation-ram">Optimisation RAM</h3>
+<p>Par défaut, WSL peut consommer une grande partie de la RAM disponible sur l'hôte Windows. Il est recommandé de limiter cette consommation (ex: 8 Go).</p>
+<p>Fichier : <code>C:\Users\VotreUtilisateur\.wslconfig</code>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">[wsl2]</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="na">memory</span><span class="o">=</span><span class="s">8GB</span>
+</code></pre></div></p>
+<blockquote>
+<p>Redémarrez WSL : <code>wsl --shutdown</code></p>
+</blockquote>
+<h3 id="gestion-des-privileges-sudoers">Gestion des privilèges (Sudoers)</h3>
+<p>Pour éviter de saisir le mot de passe à chaque commande <code>sudo</code> :</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$USER</span><span class="s2"> ALL=(ALL) NOPASSWD:ALL&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>/etc/sudoers.d/<span class="nv">$USER</span>
+</code></pre></div>
+<h2 id="2-mise-a-jour-et-dependances">2. Mise à jour et Dépendances</h2>
+<p>Mettez à jour le système et installez les paquets nécessaires (utilisés par le script d'automatisation).</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>sudo<span class="w"> </span>apt-get<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>wget<span class="w"> </span>git
+</code></pre></div>
+<h2 id="3-configuration-automatisee-recommande">3. Configuration Automatisée (Recommandé)</h2>
+<p>Nous avons créé un script qui configure automatiquement :
+*   Les dépendances (Git, Wget).
+*   Le prompt <strong>Starship</strong> (remplace kube-ps1 pour une meilleure performance et intégration Git/K8s).
+*   Les alias centralisés (chargés depuis le NAS ou Git).
+*   La configuration SSH (récupération des clés depuis Windows).
+*   La configuration Git.</p>
+<p>Lancez simplement :</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>~/github/sre-lab-infrastructure/scripts/setup_wsl_env.sh
+</code></pre></div>
+<blockquote>
+<p><strong>Note :</strong> Ce script configure votre <code>.bashrc</code> pour charger les configurations centralisées.</p>
+</blockquote>
+<h2 id="4-configuration-multi-wsl-linux-via-nas">4. Configuration Multi-WSL / Linux (Via NAS)</h2>
+<p>Si vous avez une seconde instance WSL, une VM Linux ou un autre PC, et que vous souhaitez récupérer uniquement la configuration du shell (Alias + Starship) sans impacter vos clés SSH, Git ou Kubernetes existants.</p>
+<h3 id="prerequis">Prérequis</h3>
+<p>Avoir déployé la configuration sur le NAS depuis votre machine principale :
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>deploy_env
+</code></pre></div></p>
+<h3 id="installation-sur-la-nouvelle-machine">Installation sur la nouvelle machine</h3>
+<p>Copiez et exécutez ce script de "Bootstrap" sur votre nouvelle machine. Il va :
+1. Détecter votre environnement (WSL ou Linux).
+2. Monter temporairement le NAS (via <code>drvfs</code> ou <code>cifs</code>).
+3. Appliquer la configuration shell minimaliste.
+4. Vous proposer de rendre le montage du NAS permanent.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Créer le script</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>nano<span class="w"> </span>bootstrap.sh
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="c1"># (Collez le contenu de scripts/bootstrap_env.sh)</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="c1"># Lancer</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>bash<span class="w"> </span>bootstrap.sh
+</code></pre></div>
+<p>Le script est disponible ici : <a href="../scripts/bootstrap_env.sh">scripts/bootstrap_env.sh</a></p>
+<h2 id="5-configuration-manuelle-reference">5. Configuration Manuelle (Référence)</h2>
+<p>Si vous préférez configurer manuellement ou comprendre ce que fait le script.</p>
+<h3 id="installation-de-starship">Installation de Starship</h3>
+<p>Starship est un prompt cross-shell rapide et personnalisable.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>curl<span class="w"> </span>-sS<span class="w"> </span>https://starship.rs/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>sh<span class="w"> </span>-s<span class="w"> </span>--<span class="w"> </span>-y
+</code></pre></div>
+<h3 id="configuration-du-bashrc">Configuration du .bashrc</h3>
+<p>Ajoutez ceci à votre <code>.bashrc</code> pour charger Starship et les alias :</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># --- Starship &amp; Alias ---</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nb">eval</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>starship<span class="w"> </span>init<span class="w"> </span>bash<span class="k">)</span><span class="s2">&quot;</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="o">[</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;/mnt/nas/aliases.sh&quot;</span><span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">source</span><span class="w"> </span><span class="s2">&quot;/mnt/nas/aliases.sh&quot;</span>
+</code></pre></div>
+<p>Il existe deux façons de gérer vos alias et configurations :</p>
+<ol>
+<li><strong>Méthode Centralisée (Ma configuration)</strong> : Je charge mes alias depuis mon NAS pour les partager entre WSL et mes serveurs (voir <a href="#7-centralisation-des-alias-nas">Section 7</a>).</li>
+<li><strong>Méthode Autonome (Pour démarrer)</strong> : Vous pouvez tout configurer localement en utilisant le script fourni (voir <a href="#6-script-dautomatisation">Section 6</a>) ou en copiant le bloc ci-dessous.</li>
+</ol>
+<p>Voici le contenu de référence (ajouté automatiquement par le script) :</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># --- Configuration SRE ---</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="c1"># 1. Alias</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="nb">alias</span><span class="w"> </span><span class="nv">nano</span><span class="o">=</span><span class="s2">&quot;vim&quot;</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="nb">alias</span><span class="w"> </span><span class="nv">k</span><span class="o">=</span><span class="s1">&#39;kubectl&#39;</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="nb">alias</span><span class="w"> </span><span class="nv">kcc</span><span class="o">=</span><span class="s1">&#39;kubectl config current-context&#39;</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="nb">alias</span><span class="w"> </span><span class="nv">kg</span><span class="o">=</span><span class="s1">&#39;kubectl get&#39;</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="nb">alias</span><span class="w"> </span><span class="nv">kga</span><span class="o">=</span><span class="s1">&#39;kubectl get all --all-namespaces&#39;</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="nb">alias</span><span class="w"> </span><span class="nv">kgp</span><span class="o">=</span><span class="s1">&#39;kubectl get pods&#39;</span>
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="nb">alias</span><span class="w"> </span><span class="nv">kgs</span><span class="o">=</span><span class="s1">&#39;kubectl get services&#39;</span>
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="nb">alias</span><span class="w"> </span><span class="nv">ksgp</span><span class="o">=</span><span class="s1">&#39;kubectl get pods -n kube-system&#39;</span>
+<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="nb">alias</span><span class="w"> </span><span class="nv">kuc</span><span class="o">=</span><span class="s1">&#39;kubectl config use-context&#39;</span>
+<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="nb">alias</span><span class="w"> </span><span class="nv">kgc</span><span class="o">=</span><span class="s1">&#39;kubectl config get-contexts&#39;</span>
+<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="nb">alias</span><span class="w"> </span><span class="nv">kd</span><span class="o">=</span><span class="s1">&#39;kubectl describe&#39;</span>
+<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a><span class="nb">alias</span><span class="w"> </span><span class="nv">kaf</span><span class="o">=</span><span class="s1">&#39;kubectl apply -f&#39;</span>
+<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a><span class="nb">alias</span><span class="w"> </span><span class="nv">krm</span><span class="o">=</span><span class="s1">&#39;kubectl delete&#39;</span>
+<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a><span class="nb">alias</span><span class="w"> </span><span class="nv">kl</span><span class="o">=</span><span class="s1">&#39;kubectl logs&#39;</span>
+<a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a><span class="nb">alias</span><span class="w"> </span><span class="nv">kpf</span><span class="o">=</span><span class="s1">&#39;kubectl port-forward&#39;</span>
+<a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a><span class="nb">alias</span><span class="w"> </span><span class="nv">kex</span><span class="o">=</span><span class="s1">&#39;kubectl exec -it&#39;</span>
+<a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a>
+<a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a><span class="c1"># 2. Prompt Kubernetes (kube-ps1)</span>
+<a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a><span class="nb">source</span><span class="w"> </span>/usr/local/bin/kube-ps1.sh
+<a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a><span class="nv">PS1</span><span class="o">=</span><span class="s1">&#39;${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\] $(kube_ps1)\$ &#39;</span>
+<a id="__codelineno-8-24" name="__codelineno-8-24" href="#__codelineno-8-24"></a>
+<a id="__codelineno-8-25" name="__codelineno-8-25" href="#__codelineno-8-25"></a><span class="c1"># 3. Agent SSH automatique</span>
+<a id="__codelineno-8-26" name="__codelineno-8-26" href="#__codelineno-8-26"></a><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-z<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$SSH_AUTH_SOCK</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<a id="__codelineno-8-27" name="__codelineno-8-27" href="#__codelineno-8-27"></a><span class="w">   </span><span class="nb">eval</span><span class="w"> </span><span class="sb">`</span>ssh-agent<span class="w"> </span>-s<span class="sb">`</span><span class="w"> </span>&gt;<span class="w"> </span>/dev/null
+<a id="__codelineno-8-28" name="__codelineno-8-28" href="#__codelineno-8-28"></a><span class="k">fi</span>
+<a id="__codelineno-8-29" name="__codelineno-8-29" href="#__codelineno-8-29"></a>ssh-add<span class="w"> </span>~/.ssh/id_rsa<span class="w"> </span><span class="m">2</span>&gt;/dev/null
+</code></pre></div>
+<blockquote>
+<p><strong>Note :</strong> Remplacez <code>id_rsa</code> par le nom de votre clé privée si elle est différente.</p>
+</blockquote>
+<p>Rechargez la configuration : <code>source ~/.bashrc</code></p>
+<h2 id="4-configuration-ssh-et-git">4. Configuration SSH et Git</h2>
+<h3 id="copie-des-cles-depuis-windows">Copie des clés depuis Windows</h3>
+<p>Récupérez vos clés SSH existantes depuis votre profil Windows.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>~/.ssh<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>chmod<span class="w"> </span><span class="m">700</span><span class="w"> </span>~/.ssh
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="c1"># Remplacez &#39;VotreUserWindows&#39; et &#39;id_rsa&#39; par vos informations</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>cp<span class="w"> </span>/mnt/c/Users/VotreUserWindows/.ssh/id_rsa*<span class="w"> </span>~/.ssh/
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>chmod<span class="w"> </span><span class="m">600</span><span class="w"> </span>~/.ssh/id_rsa
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>chmod<span class="w"> </span><span class="m">644</span><span class="w"> </span>~/.ssh/id_rsa.pub
+</code></pre></div>
+<h3 id="fichier-config-ssh">Fichier Config SSH</h3>
+<p>Créez <code>~/.ssh/config</code> pour l'authentification automatique (ex: GitHub).</p>
+<p><div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>Host github.com
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    HostName github.com
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    User git
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    IdentityFile ~/.ssh/id_rsa
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    AddKeysToAgent yes
+</code></pre></div>
+Permissions : <code>chmod 600 ~/.ssh/config</code></p>
+<h3 id="configuration-git">Configuration Git</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>user.name<span class="w"> </span><span class="s2">&quot;Votre Nom&quot;</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>user.email<span class="w"> </span><span class="s2">&quot;votre.email@exemple.com&quot;</span>
+</code></pre></div>
+<h2 id="5-sauvegarde-de-la-session-wsl">5. Sauvegarde de la session WSL</h2>
+<p>Commandes PowerShell pour sauvegarder/restaurer votre environnement.</p>
+<p><strong>Sauvegarde :</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">wsl</span> <span class="p">-</span><span class="n">-terminate</span> <span class="n">Ubuntu</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="n">wsl</span> <span class="p">-</span><span class="n">-export</span> <span class="n">Ubuntu</span> <span class="n">C</span><span class="p">:\</span><span class="n">Sauvegardes</span><span class="p">\</span><span class="n">wsl_backup_ubuntu</span><span class="p">.</span><span class="n">tar</span>
+</code></pre></div></p>
+<p><strong>Restauration :</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">wsl</span> <span class="p">-</span><span class="n">-import</span> <span class="n">UbuntuRestored</span> <span class="n">C</span><span class="p">:\</span><span class="n">WSL</span><span class="p">\</span><span class="n">UbuntuRestored</span> <span class="n">C</span><span class="p">:\</span><span class="n">Sauvegardes</span><span class="p">\</span><span class="n">wsl_backup_ubuntu</span><span class="p">.</span><span class="n">tar</span>
+</code></pre></div></p>
+<h2 id="7-centralisation-des-alias-nas">7. Centralisation des Alias (NAS)</h2>
+<p>Pour partager vos alias entre plusieurs machines (WSL, Serveur Ubuntu, etc.), vous pouvez stocker un fichier de configuration sur un NAS.</p>
+<h3 id="configuration-wsl-montage">Configuration WSL (Montage)</h3>
+<p>WSL monte automatiquement les lecteurs réseaux Windows s'ils sont mappés, mais un montage manuel est plus robuste.</p>
+<ol>
+<li><strong>Créer le point de montage</strong> :
+    ```bash</li>
+</ol>
+<h2 id="6-montage-nas-script-automatise">6. Montage NAS (Script Automatisé)</h2>
+<p>Pour accéder aux fichiers partagés et aux alias centralisés, nous utilisons un script qui configure automatiquement le montage du NAS (compatible WSL et Ubuntu Server).</p>
+<h3 id="script-setup_nassh">Script <code>setup_nas.sh</code></h3>
+<p>Ce script gère :
+*   L'installation des dépendances (<code>cifs-utils</code>).
+*   La création sécurisée du fichier d'identifiants (<code>~/.smbcredentials</code>).
+*   La détection de l'environnement (WSL vs Linux Natif).
+*   La configuration persistante dans <code>/etc/fstab</code>.</p>
+<p><strong>Utilisation :</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>./scripts/setup_nas.sh
+</code></pre></div></p>
+<h2 id="7-centralisation-des-alias-git-nas">7. Centralisation des Alias (Git + NAS)</h2>
+<p>Pour maintenir une configuration cohérente entre WSL et le serveur T420, nous utilisons une approche "GitOps" :
+1.  <strong>Source de vérité</strong> : Le fichier <code>shell/aliases.sh</code> dans le dépôt Git.
+2.  <strong>Distribution</strong> : Le NAS sert de point de partage.
+3.  <strong>Consommation</strong> : WSL et le T420 chargent le fichier depuis le NAS (ou Git localement).</p>
+<h3 id="1-creation-du-fichier-dalias">1. Création du fichier d'alias</h3>
+<p>Créez <code>shell/aliases.sh</code> dans votre projet :</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1"># --- SRE Lab Utils ---</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="nb">alias</span><span class="w"> </span><span class="nv">bye</span><span class="o">=</span><span class="s1">&#39;~/SCRIPTS/stop_lab; exit&#39;</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="nb">alias</span><span class="w"> </span><span class="nv">start_lab</span><span class="o">=</span><span class="s1">&#39;~/SCRIPTS/start_lab&#39;</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="c1"># Fonction pour déployer les alias sur le NAS</span>
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>deploy_aliases<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="w">    </span>cp<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/github/sre-lab-infrastructure/shell/aliases.sh&quot;</span><span class="w"> </span><span class="s2">&quot;/mnt/nas/aliases.sh&quot;</span>
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;✅ Alias déployés sur le NAS (/mnt/nas/aliases.sh)&quot;</span>
+<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="o">}</span>
+<a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>
+<a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="c1"># --- System ---</span>
+<a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="nb">alias</span><span class="w"> </span><span class="nv">update</span><span class="o">=</span><span class="s1">&#39;sudo apt update &amp;&amp; sudo apt upgrade -y&#39;</span>
+<a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="c1"># ... ajoutez vos autres alias ici ...</span>
+</code></pre></div>
+<h3 id="2-configuration-wsl-bashrc">2. Configuration WSL (.bashrc)</h3>
+<p>Ajoutez ceci à votre <code>~/.bashrc</code> pour charger les alias (priorité au Git local) :</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1"># --- Chargement des alias centralisés (SRE Lab) ---</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="nv">NAS_ALIAS_FILE</span><span class="o">=</span><span class="s2">&quot;/mnt/nas/aliases.sh&quot;</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="nv">LOCAL_ALIAS_FILE</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/github/sre-lab-infrastructure/shell/aliases.sh&quot;</span>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LOCAL_ALIAS_FILE</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="w">    </span><span class="c1"># Priorité au fichier local (Git) si on est dans le repo</span>
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="w">    </span><span class="nb">source</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LOCAL_ALIAS_FILE</span><span class="s2">&quot;</span>
+<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="k">elif</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$NAS_ALIAS_FILE</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="w">    </span><span class="c1"># Sinon on charge depuis le NAS</span>
+<a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="w">    </span><span class="nb">source</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$NAS_ALIAS_FILE</span><span class="s2">&quot;</span>
+<a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a><span class="k">fi</span>
+</code></pre></div>
+<h3 id="3-configuration-t420-bashrc">3. Configuration T420 (.bashrc)</h3>
+<p>Sur le serveur, ajoutez ceci pour charger les alias depuis le NAS :</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="c1"># --- Chargement des alias centralisés (SRE Lab) ---</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="nv">NAS_ALIAS_FILE</span><span class="o">=</span><span class="s2">&quot;/mnt/nas/aliases.sh&quot;</span>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$NAS_ALIAS_FILE</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">    </span><span class="nb">source</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$NAS_ALIAS_FILE</span><span class="s2">&quot;</span>
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="k">fi</span>
+</code></pre></div>
+<h3 id="workflow-de-mise-a-jour">Workflow de mise à jour</h3>
+<ol>
+<li>Modifiez <code>shell/aliases.sh</code> dans VS Code.</li>
+<li>Testez sur WSL (ouvrez un nouveau terminal).</li>
+<li>Déployez sur le NAS :
+    <div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>deploy_aliases
+</code></pre></div></li>
+<li>Le T420 aura les nouveaux alias à sa prochaine connexion.</li>
+</ol>
+<h2 id="5-workflow-sre-demarrage-arret">5. Workflow SRE (Démarrage &amp; Arrêt)</h2>
+<p>Pour simplifier l'utilisation du lab, nous utilisons des scripts automatisés pour gérer le cycle de vie du serveur T420.</p>
+<h3 id="script-de-demarrage-start_labsh">Script de Démarrage (<code>start_lab.sh</code>)</h3>
+<p>Ce script utilise PowerShell (depuis WSL) pour envoyer le "Magic Packet" WoL, car le broadcast UDP est bloqué par le NAT de WSL2.</p>
+<p>Fichier : <code>~/scripts/start_lab.sh</code></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="ch">#!/bin/bash</span>
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="c1"># Configuration</span>
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="nv">MAC_ADDR</span><span class="o">=</span><span class="s2">&quot;00:21:CC:70:E9:BA&quot;</span><span class="w">      </span><span class="c1"># MAC Ethernet du T420</span>
+<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="nv">SERVER_IP</span><span class="o">=</span><span class="s2">&quot;192.168.1.120&quot;</span><span class="w">         </span><span class="c1"># IP Statique du T420</span>
+<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="nv">SSH_USER</span><span class="o">=</span><span class="s2">&quot;nicolab&quot;</span>
+<a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a>
+<a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;=== Démarrage de la Session Lab SRE ===&quot;</span>
+<a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a>
+<a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a><span class="c1"># 1. Démarrage du serveur (Wake-on-LAN via PowerShell)</span>
+<a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;[1/3] Envoi du Magic Packet (WoL)...&quot;</span>
+<a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a>powershell.exe<span class="w"> </span>-Command<span class="w"> </span><span class="s2">&quot;</span>
+<a id="__codelineno-19-13" name="__codelineno-19-13" href="#__codelineno-19-13"></a><span class="s2">\$mac = &#39;</span><span class="nv">$MAC_ADDR</span><span class="s2">&#39;</span>
+<a id="__codelineno-19-14" name="__codelineno-19-14" href="#__codelineno-19-14"></a><span class="s2">\$macBytes = \$mac -split &#39;[:-]&#39; | ForEach-Object { [byte](&#39;0x&#39; + \$_) }</span>
+<a id="__codelineno-19-15" name="__codelineno-19-15" href="#__codelineno-19-15"></a><span class="s2">\$packet = [byte[]](,0xFF * 6) + \$macBytes * 16</span>
+<a id="__codelineno-19-16" name="__codelineno-19-16" href="#__codelineno-19-16"></a><span class="s2">\$client = New-Object System.Net.Sockets.UdpClient</span>
+<a id="__codelineno-19-17" name="__codelineno-19-17" href="#__codelineno-19-17"></a><span class="s2">\$client.Connect(([System.Net.IPAddress]::Broadcast), 9)</span>
+<a id="__codelineno-19-18" name="__codelineno-19-18" href="#__codelineno-19-18"></a><span class="s2">\$client.Send(\$packet, \$packet.Length)</span>
+<a id="__codelineno-19-19" name="__codelineno-19-19" href="#__codelineno-19-19"></a><span class="s2">\$client.Close()</span>
+<a id="__codelineno-19-20" name="__codelineno-19-20" href="#__codelineno-19-20"></a><span class="s2">&quot;</span>
+<a id="__codelineno-19-21" name="__codelineno-19-21" href="#__codelineno-19-21"></a>
+<a id="__codelineno-19-22" name="__codelineno-19-22" href="#__codelineno-19-22"></a><span class="c1"># 2. Attente de la disponibilité</span>
+<a id="__codelineno-19-23" name="__codelineno-19-23" href="#__codelineno-19-23"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;[2/3] Attente du démarrage du serveur (</span><span class="nv">$SERVER_IP</span><span class="s2">)...&quot;</span>
+<a id="__codelineno-19-24" name="__codelineno-19-24" href="#__codelineno-19-24"></a><span class="nv">START_TIME</span><span class="o">=</span><span class="k">$(</span>date<span class="w"> </span>+%s<span class="k">)</span>
+<a id="__codelineno-19-25" name="__codelineno-19-25" href="#__codelineno-19-25"></a><span class="nv">TIMEOUT</span><span class="o">=</span><span class="m">120</span><span class="w"> </span>
+<a id="__codelineno-19-26" name="__codelineno-19-26" href="#__codelineno-19-26"></a>
+<a id="__codelineno-19-27" name="__codelineno-19-27" href="#__codelineno-19-27"></a><span class="k">while</span><span class="w"> </span>!<span class="w"> </span>ping<span class="w"> </span>-c<span class="w"> </span><span class="m">1</span><span class="w"> </span>-W<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$SERVER_IP</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">&amp;</span>&gt;<span class="w"> </span>/dev/null<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<a id="__codelineno-19-28" name="__codelineno-19-28" href="#__codelineno-19-28"></a><span class="w">    </span><span class="nv">CURRENT_TIME</span><span class="o">=</span><span class="k">$(</span>date<span class="w"> </span>+%s<span class="k">)</span>
+<a id="__codelineno-19-29" name="__codelineno-19-29" href="#__codelineno-19-29"></a><span class="w">    </span><span class="nv">ELAPSED</span><span class="o">=</span><span class="k">$((</span><span class="nv">CURRENT_TIME</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nv">START_TIME</span><span class="k">))</span>
+<a id="__codelineno-19-30" name="__codelineno-19-30" href="#__codelineno-19-30"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="nv">$ELAPSED</span><span class="w"> </span>-gt<span class="w"> </span><span class="nv">$TIMEOUT</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<a id="__codelineno-19-31" name="__codelineno-19-31" href="#__codelineno-19-31"></a><span class="w">        </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Erreur : Timeout.&quot;</span>
+<a id="__codelineno-19-32" name="__codelineno-19-32" href="#__codelineno-19-32"></a><span class="w">        </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span>
+<a id="__codelineno-19-33" name="__codelineno-19-33" href="#__codelineno-19-33"></a><span class="w">    </span><span class="k">fi</span>
+<a id="__codelineno-19-34" name="__codelineno-19-34" href="#__codelineno-19-34"></a><span class="w">    </span><span class="nb">printf</span><span class="w"> </span><span class="s2">&quot;.&quot;</span>
+<a id="__codelineno-19-35" name="__codelineno-19-35" href="#__codelineno-19-35"></a><span class="w">    </span>sleep<span class="w"> </span><span class="m">1</span>
+<a id="__codelineno-19-36" name="__codelineno-19-36" href="#__codelineno-19-36"></a><span class="k">done</span>
+<a id="__codelineno-19-37" name="__codelineno-19-37" href="#__codelineno-19-37"></a>
+<a id="__codelineno-19-38" name="__codelineno-19-38" href="#__codelineno-19-38"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<a id="__codelineno-19-39" name="__codelineno-19-39" href="#__codelineno-19-39"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;[3/3] Serveur prêt !&quot;</span>
+<a id="__codelineno-19-40" name="__codelineno-19-40" href="#__codelineno-19-40"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;-------------------------------------------------------&quot;</span>
+<a id="__codelineno-19-41" name="__codelineno-19-41" href="#__codelineno-19-41"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;IP : </span><span class="nv">$SERVER_IP</span><span class="s2">&quot;</span>
+<a id="__codelineno-19-42" name="__codelineno-19-42" href="#__codelineno-19-42"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;SSH : ssh </span><span class="nv">$SSH_USER</span><span class="s2">@</span><span class="nv">$SERVER_IP</span><span class="s2">&quot;</span>
+<a id="__codelineno-19-43" name="__codelineno-19-43" href="#__codelineno-19-43"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;-------------------------------------------------------&quot;</span>
+</code></pre></div>
+<h3 id="script-darret-stop_labsh">Script d'Arrêt (<code>stop_lab.sh</code>)</h3>
+<p>Ce script éteint proprement le serveur via SSH.</p>
+<p>Fichier : <code>~/scripts/stop_lab.sh</code></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="ch">#!/bin/bash</span>
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="nv">SERVER_IP</span><span class="o">=</span><span class="s2">&quot;192.168.1.120&quot;</span>
+<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="nv">SSH_USER</span><span class="o">=</span><span class="s2">&quot;nicolab&quot;</span>
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>
+<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;=== Arrêt du Lab SRE ===&quot;</span>
+<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="k">if</span><span class="w"> </span>ping<span class="w"> </span>-c<span class="w"> </span><span class="m">1</span><span class="w"> </span>-W<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$SERVER_IP</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">&amp;</span>&gt;<span class="w"> </span>/dev/null<span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Envoi de l&#39;ordre d&#39;extinction...&quot;</span>
+<a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="w">    </span>ssh<span class="w"> </span>-o<span class="w"> </span><span class="nv">ConnectTimeout</span><span class="o">=</span><span class="m">5</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$SSH_USER</span><span class="s2">@</span><span class="nv">$SERVER_IP</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;sudo shutdown -h now&quot;</span>
+<a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a><span class="k">else</span>
+<a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Le serveur est déjà éteint ou inaccessible.&quot;</span>
+<a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a><span class="k">fi</span>
+</code></pre></div>
+<h3 id="installation-des-raccourcis-et-alias">Installation des Raccourcis et Alias</h3>
+<p>Pour une utilisation fluide, nous créons des raccourcis et un alias <code>bye</code>.</p>
+<ol>
+<li>
+<p><strong>Créer le dossier de scripts et les liens symboliques :</strong>
+    <div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>~/SCRIPTS
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>ln<span class="w"> </span>-sf<span class="w"> </span>~/github/sre-lab-infrastructure/scripts/start_lab.sh<span class="w"> </span>~/SCRIPTS/start_lab
+<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>ln<span class="w"> </span>-sf<span class="w"> </span>~/github/sre-lab-infrastructure/scripts/stop_lab.sh<span class="w"> </span>~/SCRIPTS/stop_lab
+<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>chmod<span class="w"> </span>+x<span class="w"> </span>~/github/sre-lab-infrastructure/scripts/*.sh
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Configurer l'alias <code>bye</code> dans <code>.bashrc</code> :</strong>
+    Ajoutez cette ligne à la fin de votre <code>~/.bashrc</code> :
+    <div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="nb">alias</span><span class="w"> </span><span class="nv">bye</span><span class="o">=</span><span class="s1">&#39;~/SCRIPTS/stop_lab; exit&#39;</span>
+</code></pre></div>
+    Rechargez la configuration : <code>source ~/.bashrc</code></p>
+</li>
+</ol>
+<h3 id="utilisation-quotidienne">Utilisation Quotidienne</h3>
+<ol>
+<li><strong>Démarrer le lab :</strong>
+    <div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>~/SCRIPTS/start_lab
+</code></pre></div></li>
+<li><strong>Travailler...</strong></li>
+<li><strong>Finir la session (Éteindre et fermer) :</strong>
+    <div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>bye
+</code></pre></div></li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Retour en haut de la page
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "navigation.tracking", "toc.integrate", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copi\u00e9 dans le presse-papier", "clipboard.copy": "Copier dans le presse-papier", "search.result.more.one": "1 de plus sur cette page", "search.result.more.other": "# de plus sur cette page", "search.result.none": "Aucun document trouv\u00e9", "search.result.one": "1 document trouv\u00e9", "search.result.other": "# documents trouv\u00e9s", "search.result.placeholder": "Taper pour d\u00e9marrer la recherche", "search.result.term.missing": "Non trouv\u00e9", "select.version": "S\u00e9lectionner la version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
