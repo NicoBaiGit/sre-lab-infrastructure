@@ -1,0 +1,54 @@
+# ~/.config/starship.toml
+
+# Insère une ligne vide entre les commandes shell
+add_newline = true
+
+# --- Kubernetes ---
+[kubernetes]
+disabled = false
+symbol = "☸ "
+style = "bold blue"
+format = '[$symbol$context( \($namespace\))]($style) '
+
+# On peut masquer le contexte s'il est trop long ou générique
+# [kubernetes.context_aliases]
+# "arn:aws:eks:..." = "EKS-Prod"
+
+# --- Git ---
+[git_branch]
+symbol = "🌱 "
+style = "bold green"
+
+[git_status]
+style = "bold red"
+format = '([$all_status$ahead_behind]($style) )'
+
+# --- System ---
+[username]
+style_user = "white bold"
+style_root = "black bold red"
+format = "[$user]($style) "
+disabled = false
+show_always = true
+
+[hostname]
+ssh_only = true
+format = "on [$hostname](bold yellow) "
+disabled = false
+
+[directory]
+truncation_length = 3
+truncation_symbol = "…/"
+style = "bold cyan"
+
+# --- Cloud & Langages (Activés uniquement si fichiers détectés) ---
+[aws]
+symbol = "☁️  "
+style = "bold orange"
+disabled = false
+
+[docker_context]
+symbol = "🐳 "
+
+[python]
+symbol = "🐍 "

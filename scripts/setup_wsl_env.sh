@@ -24,48 +24,46 @@ echo "Sauvegarde de .bashrc effectuée vers .bashrc.bak"
 
 cat << 'EOF' >> ~/.bashrc
 
-# --- Custom Aliases ---
-# Editor
-alias nano="vim"
+# --- Chargement des alias centralisés (SRE Lab) ---
+NAS_ALIAS_FILE="/mnt/nas/aliases.sh"
+LOCAL_ALIAS_FILE="$HOME/github/sre-lab-infrastructure/shell/aliases.sh"
 
-# Kubernetes
-alias k='kubectl'
-alias kcc='kubectl config current-context'
-alias kg='kubectl get'
-alias kga='kubectl get all --all-namespaces'
-alias kgp='kubectl get pods'
-alias kgs='kubectl get services'
-alias ksgp='kubectl get pods -n kube-system'
-alias kuc='kubectl config use-context'
-alias kgc='kubectl config get-contexts'
-alias kd='kubectl describe'
-alias kaf='kubectl apply -f'
-alias krm='kubectl delete'
-alias kl='kubectl logs'
-alias kpf='kubectl port-forward'
-alias kex='kubectl exec -it'
+if [ -f "$LOCAL_ALIAS_FILE" ]; then
+    # Priorité au fichier local (Git) si on est dans le repo
+    source "$LOCAL_ALIAS_FILE"
+elif [ -f "$NAS_ALIAS_FILE" ]; then
+    # Sinon on charge depuis le NAS
+    source "$NAS_ALIAS_FILE"
+fi
 
 EOF
 
-# 3. kube-ps1 Installation & Configuration
-echo "[3/5] Installation de kube-ps1..."
-if [ ! -f /usr/local/bin/kube-ps1.sh ]; then
-    wget https://github.com/jonmosco/kube-ps1/archive/refs/tags/v0.9.0.tar.gz
-    tar xzvf v0.9.0.tar.gz
-    sudo cp kube-ps1-0.9.0/kube-ps1.sh /usr/local/bin/
-    sudo chmod +x /usr/local/bin/kube-ps1.sh
-    rm -rf kube-ps1-0.9.0 v0.9.0.tar.gz
-    echo "kube-ps1 installé."
+# 3. Starship Installation (Prompt Moderne : Git + K8s)
+echo "[3/5] Installation de Starship (Prompt)..."
+if ! command -v starship &> /dev/null; then
+    curl -sS https://starship.rs/install.sh | sh -s -- -y
+    echo "Starship installé."
 else
-    echo "kube-ps1 déjà présent."
+    echo "Starship est déjà installé."
 fi
 
-echo "Configuration de kube-ps1 dans .bashrc..."
+echo "Configuration de Starship dans .bashrc..."
 cat << 'EOF' >> ~/.bashrc
 
-# --- kube-ps1 Configuration ---
-source /usr/local/bin/kube-ps1.sh
-PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\] $(kube_ps1)\$ '
+# --- Starship Prompt (SRE Lab) ---
+# Définition de la source de configuration (Git Local ou NAS)
+NAS_CONFIG_FILE="/mnt/nas/starship.toml"
+LOCAL_CONFIG_FILE="$HOME/github/sre-lab-infrastructure/config/starship.toml"
+
+if [ -f "$LOCAL_CONFIG_FILE" ]; then
+    export STARSHIP_CONFIG="$LOCAL_CONFIG_FILE"
+elif [ -f "$NAS_CONFIG_FILE" ]; then
+    export STARSHIP_CONFIG="$NAS_CONFIG_FILE"
+fi
+
+# Initialisation
+eval "$(starship init bash)"
+
 EOF
 
 # 4. SSH Configuration
@@ -98,3 +96,15 @@ Host github.com
     IdentityFile ~/.ssh/$SSH_KEY_NAME
     AddKeysToAgent yes
 EOF
+
+# 5. Git Configuration
+echo "[5/5] Configuration Git..."
+git config --global user.name "$GIT_USER_NAME"
+git config --global user.email "$GIT_USER_EMAIL"
+git config --global core.editor "vim"
+git config --global init.defaultBranch main
+
+echo "-----------------------------------------------------"
+echo "Configuration terminée !"
+echo "Veuillez recharger votre shell ou lancer : source ~/.bashrc"
+
