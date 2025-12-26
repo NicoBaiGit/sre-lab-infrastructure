@@ -6,8 +6,6 @@ site_author: Nicolas Bailleul
 theme:
   name: material
   language: fr
-  logo: material/server-network
-  favicon: material/server-network
   palette:
     # Dark mode by default (SRE Style)
     - scheme: slate
@@ -50,12 +48,14 @@ markdown_extensions:
   - attr_list
   - md_in_html
   - pymdownx.emoji:
-      emoji_index: !!python/name:materialx.emoji.twemoji
-      emoji_generator: !!python/name:materialx.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
 
 nav:
   - Accueil: index.md
-  - 01. Poste de Travail (WSL): wsl.md
-  - 02. Le Serveur (T420): ubuntu-server.md
-  - 03. Guide du Lab SRE: setup-lab.md
+  - Poste de Travail:
+    - Configuration WSL: wsl.md
+    - Gestion Environnement: workstation-management.md
+  - Serveur: ubuntu-server.md
+  - Lab SRE: setup-lab.md
 
