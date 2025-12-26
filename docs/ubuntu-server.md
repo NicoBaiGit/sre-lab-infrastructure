@@ -102,12 +102,26 @@ GRUB_CMDLINE_LINUX_DEFAULT="quiet splash consoleblank=60"
 ```
 Puis : `sudo update-grub` et redémarrer.
 
-### Désactiver le Wi-Fi
+### Désactiver les radios (Wi-Fi / Bluetooth)
 
-Si connecté en Ethernet :
-```bash
-sudo nmcli radio wifi off
-```
+Pour économiser de l'énergie et éviter les interférences, il est recommandé de couper les radios inutilisées sur un serveur connecté en Ethernet.
+
+1.  **Installer rfkill** (si absent) :
+    ```bash
+    sudo apt update && sudo apt install -y rfkill
+    ```
+
+2.  **Couper le Wi-Fi et le Bluetooth** :
+    ```bash
+    sudo rfkill block wifi
+    sudo rfkill block bluetooth
+    ```
+
+3.  **Vérifier l'état** :
+    ```bash
+    rfkill list
+    ```
+    *(Vous devez voir `Soft blocked: yes` pour Wireless LAN et Bluetooth)*.
 
 ## 6. Montage NAS Sécurisé (Pour Alias & Data)
 

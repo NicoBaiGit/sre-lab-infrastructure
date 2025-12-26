@@ -48,7 +48,35 @@ Lancez simplement :
 
 > **Note :** Ce script configure votre `.bashrc` pour charger les configurations centralisées.
 
-## 4. Configuration Manuelle (Référence)
+## 4. Configuration Multi-WSL / Linux (Via NAS)
+
+Si vous avez une seconde instance WSL, une VM Linux ou un autre PC, et que vous souhaitez récupérer uniquement la configuration du shell (Alias + Starship) sans impacter vos clés SSH, Git ou Kubernetes existants.
+
+### Prérequis
+Avoir déployé la configuration sur le NAS depuis votre machine principale :
+```bash
+deploy_env
+```
+
+### Installation sur la nouvelle machine
+Copiez et exécutez ce script de "Bootstrap" sur votre nouvelle machine. Il va :
+1. Détecter votre environnement (WSL ou Linux).
+2. Monter temporairement le NAS (via `drvfs` ou `cifs`).
+3. Appliquer la configuration shell minimaliste.
+4. Vous proposer de rendre le montage du NAS permanent.
+
+```bash
+# Créer le script
+nano bootstrap.sh
+# (Collez le contenu de scripts/bootstrap_env.sh)
+
+# Lancer
+bash bootstrap.sh
+```
+
+Le script est disponible ici : [scripts/bootstrap_env.sh](../scripts/bootstrap_env.sh)
+
+## 5. Configuration Manuelle (Référence)
 
 Si vous préférez configurer manuellement ou comprendre ce que fait le script.
 
