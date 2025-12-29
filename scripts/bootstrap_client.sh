@@ -165,3 +165,14 @@ else
 fi
 
 echo "🎉 Bootstrap terminé ! Veuillez recharger votre shell : source ~/.bashrc"
+
+echo ""
+echo "👉 Pour appliquer les changements immédiatement, je peux recharger votre shell."
+read -p "🔄 Voulez-vous recharger le shell maintenant ? (o/N) " -n 1 -r
+echo ""
+if [[ $REPLY =~ ^[Oo]$ ]]; then
+    echo "🔄 Rechargement..."
+    exec bash
+else
+    echo "✅ OK. N'oubliez pas de faire 'source ~/.bashrc' manuellement."
+fi
