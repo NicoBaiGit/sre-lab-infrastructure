@@ -46,8 +46,21 @@ Vous voulez récupérer votre confort (Starship, Alias `k`, `ll`...) sans écras
     bash bootstrap_client.sh
     ```
     *   Il monte le NAS (et configure fstab).
-    *   Il installe Starship et injecte les alias.
-    *   Il configure `sudo` sans mot de passe (optionnel).
+### Cas B : Mise à jour d'un Client existant
+Si vous avez mis à jour le script `bootstrap_client.sh` (ex: ajout de keychain, fix WSL) et que vous voulez l'appliquer sur vos machines :
+
+1.  **Récupérer la dernière version** :
+    ```bash
+    cd ~/github/sre-lab-infrastructure
+    git pull
+    ```
+2.  **Relancer le script** :
+    ```bash
+    ./scripts/bootstrap_client.sh
+    ```
+    > Le script est conçu pour être relancé autant de fois que nécessaire (idempotent). Il détectera ce qui est déjà fait et appliquera uniquement les nouveautés.
+
+## 4. Dépannage Courant
 
 ### Cas B : Nouveau Poste de Travail Principal (Full Setup)
 *Cible : Nouvelle installation WSL vierge où vous allez développer.*
