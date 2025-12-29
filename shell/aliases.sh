@@ -36,15 +36,15 @@ alias kex='kubectl exec -it'
 alias nano="vim"
 
 # --- SRE Lab Utils ---
-alias bye='~/SCRIPTS/stop_lab; exit'
-alias start_lab='~/SCRIPTS/start_lab'
-alias deploy_env='$HOME/github/sre-lab-infrastructure/scripts/deploy_to_nas.sh'
+alias bye='/mnt/nas/stop_lab.sh; exit'
+alias start_lab='/mnt/nas/start_lab.sh'
+alias deploy_env='/mnt/nas/deploy_to_nas.sh'
 
 # --- System ---
 alias update='sudo apt update && sudo apt upgrade -y'cd 
 
 # --- Deploy ---
-alias deploy-lab='$HOME/github/sre-lab-infrastructure/scripts/deploy_to_nas.sh'
+alias deploy-lab='/mnt/nas/deploy_to_nas.sh'
 
 # --- SSH Agent (Keychain) ---
 # Charge automatiquement les clés SSH au démarrage du shell (demande le mot de passe une seule fois par reboot)
