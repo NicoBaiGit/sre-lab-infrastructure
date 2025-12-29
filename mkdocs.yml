@@ -37,10 +37,18 @@ theme:
 extra_css:
   - stylesheets/extra.css
 
+extra_javascript:
+  - https://unpkg.com/mermaid/dist/mermaid.min.js
+  - javascripts/mermaid-init.js
+
 markdown_extensions:
   - admonition
   - pymdownx.details
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.highlight:
       anchor_linenums: true
   - pymdownx.inlinehilite
@@ -53,9 +61,11 @@ markdown_extensions:
 
 nav:
   - Accueil: index.md
-  - Poste de Travail:
+  - Architecture: architecture.md
+  - 01. Poste de Travail:
     - Configuration WSL: wsl.md
     - Gestion Environnement: workstation-management.md
-  - Serveur: ubuntu-server.md
-  - Lab SRE: setup-lab.md
+  - 02. Serveur: ubuntu-server.md
+  - 03. Lab SRE: setup-lab.md
+  - Mémo Quotidien: daily_memo.md
 

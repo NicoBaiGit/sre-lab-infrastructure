@@ -10,20 +10,32 @@ symbol = "☸ "
 style = "bold blue"
 format = '[$symbol$context( \($namespace\))]($style) '
 
-# On peut masquer le contexte s'il est trop long ou générique
-# [kubernetes.context_aliases]
-# "arn:aws:eks:..." = "EKS-Prod"
-
 # --- Git ---
 [git_branch]
 symbol = "🌱 "
 style = "bold green"
 
+[git_commit]
+commit_hash_length = 4
+tag_symbol = "🔖 "
+
+[git_state]
+format = '[\($state( $progress_current of $progress_total)\)]($style) '
+
 [git_status]
 style = "bold red"
-format = '([$all_status$ahead_behind]($style) )'
+format = '([${all_status}$ahead_behind]($style) )'
 
-# --- System ---
+# --- System & Shell ---
+[os]
+disabled = false
+style = "bold white"
+
+[shell]
+disabled = false
+format = "[$indicator]($style) "
+style = "cyan bold"
+
 [username]
 style_user = "white bold"
 style_root = "black bold red"
@@ -41,14 +53,77 @@ truncation_length = 3
 truncation_symbol = "…/"
 style = "bold cyan"
 
-# --- Cloud & Langages (Activés uniquement si fichiers détectés) ---
-[aws]
-symbol = "☁️  "
-style = "bold orange"
+[sudo]
+style = "bold red"
+symbol = "🧙 "
 disabled = false
+
+[memory_usage]
+disabled = false
+threshold = 75
+symbol = "🧠 "
+style = "bold dimmed white"
+format = "[$symbol${ram}( ${swap})]($style) "
+
+[jobs]
+symbol = "🚦 "
+style = "bold blue"
+
+[cmd_duration]
+min_time = 2_000
+format = "⏱️ [$duration]($style) "
+style = "bold yellow"
+
+[time]
+disabled = false
+format = '[$time]($style) '
+time_format = "%R" # Heure:Minute (24h)
+style = "bold dimmed white"
+
+# --- Cloud & Infrastructure ---
+[aws]
+symbol = "☁️ AWS "
+style = "bold orange"
+format = 'on [$symbol($profile )(\($region\) )]($style)'
+
+[azure]
+symbol = "☁️ AZ "
+style = "bold blue"
+disabled = false
+format = 'on [$symbol($subscription)]($style) '
+
+[gcloud]
+symbol = "☁️ GCP "
+style = "bold yellow"
+format = 'on [$symbol$account(@$domain)(\($project\))]($style) '
+disabled = false
+
+[terraform]
+symbol = "🏗️ TF "
+style = "bold purple"
+format = 'via [$symbol$workspace]($style) '
+
+# --- Containers & Orchestration ---
+[helm]
+symbol = "⎈ "
+style = "bold white"
+format = 'via [$symbol($version )]($style)'
 
 [docker_context]
 symbol = "🐳 "
+format = 'via [$symbol$context]($style) '
 
+[container]
+symbol = "📦 "
+format = '[$symbol$name]($style) '
+
+# --- Langages ---
 [python]
 symbol = "🐍 "
+style = "bold yellow"
+format = 'via [$symbol($version )(\($virtualenv\) )]($style)'
+
+[golang]
+symbol = "🐹 "
+style = "bold cyan"
+format = 'via [$symbol($version )]($style)'

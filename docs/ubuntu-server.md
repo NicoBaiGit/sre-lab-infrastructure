@@ -40,14 +40,21 @@ ssh-copy-id -i ~/.ssh/id_rsa.pub nicolab@<IP-DU-T420>
 
 ### Configuration de l'environnement (Starship + Alias)
 
-Une fois le NAS monté (voir `setup_nas.sh`), vous pouvez configurer l'environnement shell standardisé (Prompt Starship + Alias centralisés) en lançant :
+Nous utilisons le même script de **Bootstrap** que pour WSL. Il va monter le NAS et configurer le shell.
 
 ```bash
-~/github/sre-lab-infrastructure/scripts/setup_server_env.sh
+# Cloner le repo si nécessaire
+git clone https://github.com/NicoBaiGit/sre-lab-infrastructure.git ~/github/sre-lab-infrastructure
+
+# Lancer le bootstrap
+~/github/sre-lab-infrastructure/scripts/bootstrap_client.sh
+source ~/.bashrc
 ```
 
 Ce script va :
-1.  Installer **Starship**.
+1.  Monter le NAS sur `/mnt/nas` (et configurer `/etc/fstab`).
+2.  Installer **Starship**.
+3.  Configurer les alias partagés.
 2.  Configurer `.bashrc` pour utiliser la configuration centralisée sur le NAS.
 
 ### Script d'initialisation système (init-t420.sh)
@@ -165,7 +172,7 @@ Ne jamais mettre de mot de passe en clair dans `/etc/fstab`. Utilisez un fichier
     ```
     Ajouter la ligne suivante (remplacez l'IP et le chemin) :
     ```text
-    //192.168.1.X/work /mnt/nas cifs credentials=/home/votre_user/.smbcredentials,iocharset=utf8,vers=3.0,noperm 0 0
+    //192.168.1.2/work /mnt/nas cifs credentials=/home/votre_user/.smbcredentials,iocharset=utf8,vers=3.0,noperm 0 0
     ```
 
 3.  **Tester** :

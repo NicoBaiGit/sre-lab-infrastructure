@@ -33,20 +33,21 @@ sudo apt-get update && sudo apt-get install -y wget git
 
 ## 3. Configuration Automatisée (Recommandé)
 
-Nous avons créé un script qui configure automatiquement :
-*   Les dépendances (Git, Wget).
-*   Le prompt **Starship** (remplace kube-ps1 pour une meilleure performance et intégration Git/K8s).
-*   Les alias centralisés (chargés depuis le NAS ou Git).
-*   La configuration SSH (récupération des clés depuis Windows).
-*   La configuration Git.
+Nous utilisons un script de **Bootstrap** qui connecte votre WSL au NAS centralisé et configure tout l'environnement.
+
+Ce script va :
+*   Monter le NAS (`/mnt/nas`) automatiquement.
+*   Installer **Starship** (Prompt moderne).
+*   Configurer votre `.bashrc` pour charger les alias et la config depuis le NAS.
 
 Lancez simplement :
 
 ```bash
-~/github/sre-lab-infrastructure/scripts/setup_wsl_env.sh
+~/github/sre-lab-infrastructure/scripts/bootstrap_client.sh
+source ~/.bashrc
 ```
 
-> **Note :** Ce script configure votre `.bashrc` pour charger les configurations centralisées.
+> **Note :** La première fois, le script vous demandera les identifiants du NAS pour créer le fichier `~/.smbcredentials`.
 
 ## 4. Configuration Multi-WSL / Linux (Via NAS)
 
@@ -59,22 +60,17 @@ deploy_env
 ```
 
 ### Installation sur la nouvelle machine
-Copiez et exécutez ce script de "Bootstrap" sur votre nouvelle machine. Il va :
-1. Détecter votre environnement (WSL ou Linux).
-2. Monter temporairement le NAS (via `drvfs` ou `cifs`).
-3. Appliquer la configuration shell minimaliste.
-4. Vous proposer de rendre le montage du NAS permanent.
+Utilisez le script de bootstrap universel :
 
 ```bash
-# Créer le script
-nano bootstrap.sh
-# (Collez le contenu de scripts/bootstrap_env.sh)
+# Cloner le repo (si possible)
+git clone https://github.com/NicoBaiGit/sre-lab-infrastructure.git ~/github/sre-lab-infrastructure
 
-# Lancer
-bash bootstrap.sh
+# Lancer le bootstrap
+~/github/sre-lab-infrastructure/scripts/bootstrap_client.sh
 ```
 
-Le script est disponible ici : [scripts/bootstrap_env.sh](../scripts/bootstrap_env.sh)
+Le script est disponible ici : [scripts/bootstrap_client.sh](../scripts/bootstrap_client.sh)
 
 ## 5. Configuration Manuelle (Référence)
 
@@ -126,9 +122,8 @@ alias kl='kubectl logs'
 alias kpf='kubectl port-forward'
 alias kex='kubectl exec -it'
 
-# 2. Prompt Kubernetes (kube-ps1)
-source /usr/local/bin/kube-ps1.sh
-PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\] $(kube_ps1)\$ '
+# 2. Prompt Kubernetes (kube-ps1) - OBSOLÈTE
+# Remplacé par Starship (voir section Starship)
 
 # 3. Agent SSH automatique
 if [ -z "$SSH_AUTH_SOCK" ]; then
@@ -197,21 +192,21 @@ WSL monte automatiquement les lecteurs réseaux Windows s'ils sont mappés, mais
 
 1.  **Créer le point de montage** :
     ```bash
-## 6. Montage NAS (Script Automatisé)
+## 6. Montage NAS (Automatisé)
 
-Pour accéder aux fichiers partagés et aux alias centralisés, nous utilisons un script qui configure automatiquement le montage du NAS (compatible WSL et Ubuntu Server).
+Le montage du NAS est désormais géré automatiquement par le script de bootstrap universel.
 
-### Script `setup_nas.sh`
+### Script `bootstrap_client.sh`
 
 Ce script gère :
 *   L'installation des dépendances (`cifs-utils`).
 *   La création sécurisée du fichier d'identifiants (`~/.smbcredentials`).
-*   La détection de l'environnement (WSL vs Linux Natif).
 *   La configuration persistante dans `/etc/fstab`.
+*   Le montage immédiat sur `/mnt/nas`.
 
 **Utilisation :**
 ```bash
-./scripts/setup_nas.sh
+./scripts/bootstrap_client.sh
 ```
 
 ## 7. Centralisation des Alias (Git + NAS)

@@ -21,38 +21,38 @@ Infrastructure as Code • Kubernetes • GitOps • Observabilité
 
 ## ⚡ Démarrage Rapide
 
-Configurez votre environnement en une commande :
-
-### Sur WSL
+### 1. Initialisation du NAS (Serveur Central)
+Assurez-vous que le NAS est prêt et accessible.
 ```bash
-~/github/sre-lab-infrastructure/scripts/setup_wsl_env.sh
+# Depuis votre poste principal (WSL)
+./scripts/deploy_to_nas.sh
+```
+
+### 2. Bootstrap d'un nouveau client (WSL, Serveur, VM)
+Ce script connecte la machine au NAS et configure le shell.
+```bash
+# Sur la machine cible
+./scripts/bootstrap_client.sh
 source ~/.bashrc
 ```
 
-### Sur le Serveur
-```bash
-~/github/sre-lab-infrastructure/scripts/setup_server_env.sh
-source ~/.bashrc
-```
+## 🔄 Gestion de l'Environnement (Centralisé)
 
-## 🔄 Gestion de l'Environnement (GitOps)
-
-Nous utilisons une approche "GitOps-lite" pour gérer la configuration du shell (Alias, Prompt) sur toutes les machines du lab.
+Nous utilisons le NAS comme source de vérité pour la configuration du shell (Alias, Prompt) sur toutes les machines du lab.
 
 ### Flux de travail
 
 1.  **Modification** : Editez les fichiers dans ce dépôt.
     *   Alias : `shell/aliases.sh`
     *   Prompt : `config/starship.toml`
-2.  **Déploiement** : Depuis votre WSL, lancez la fonction `deploy_env` (définie dans les alias).
+2.  **Déploiement** : Depuis votre WSL, lancez `deploy_env`.
     *   Cela copie les fichiers vers le NAS (`/mnt/nas`).
 3.  **Consommation** : Les machines (WSL, Serveurs) chargent la configuration depuis le NAS au démarrage du shell.
 
 ### Scripts d'installation
 
-*   **WSL** : `scripts/setup_wsl_env.sh` (Installe Starship, configure Git/SSH, lie le .bashrc au NAS).
-*   **Serveur (T420)** : `scripts/setup_server_env.sh` (Installe Starship, lie le .bashrc au NAS).
-*   **NAS** : `scripts/setup_nas.sh` (Monte le partage NAS nécessaire pour accéder aux configs).
+*   **Bootstrap Universel** : `scripts/bootstrap_client.sh` (Script unique pour WSL et Serveur. Monte le NAS, installe Starship, configure le shell).
+*   **Déploiement** : `scripts/deploy_to_nas.sh` (Copie la configuration locale vers le NAS).
 
 ## 🛠️ Développement de la Documentation
 

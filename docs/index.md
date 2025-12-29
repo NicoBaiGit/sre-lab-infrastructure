@@ -35,22 +35,78 @@ hide:
 
 </div>
 
-## ⚡ Démarrage Rapide
+## 🌍 Contexte du Lab
 
-Vous avez déjà cloné le repo ? Configurez votre environnement en une commande :
+Ce projet vise à créer une infrastructure SRE domestique robuste, centralisée et reproductible.
 
-=== "Sur WSL"
+### Matériel
+*   **Poste Principal** : Lenovo T14 (Windows 11, 16Go RAM) hébergeant plusieurs sessions WSL2.
+*   **Serveur Lab** : Lenovo T420 (Ubuntu Server) pour héberger les charges de travail (K3s).
+*   **Stockage Central** : NAS Synology.
+
+### Philosophie : "Centralisation NAS"
+L'objectif est d'avoir une expérience unifiée sur toutes les machines (WSL, Serveurs, VM) :
+*   **Configuration Unique** : Les alias, le prompt (Starship) et les scripts sont stockés sur le NAS.
+*   **Bootstrap Universel** : N'importe quelle machine peut rejoindre le lab en exécutant un script unique qui monte le NAS et configure le shell.
+*   **Gestion à distance** : Le lab peut être démarré (WOL) et arrêté depuis n'importe quel point du réseau.
+
+---
+
+## 📅 Chronologie de mise en œuvre (De A à Z)
+
+Pour reconstruire ce lab depuis zéro, suivez ces étapes dans l'ordre :
+
+### 1. Initialisation du NAS (Le Cœur)
+Le NAS doit être opérationnel et exposer un partage SMB (ex: `work`).
+
+### 2. Préparation du Poste de Travail (WSL)
+C'est votre tour de contrôle.
+*   *Action* : Installer WSL sur le T14.
+*   *Action* : Cloner ce dépôt Git.
+*   *Action* : Lancer le bootstrap (`scripts/bootstrap_client.sh`).
+    *   *Effet* : Ce script va **monter le NAS** (`/mnt/nas`) et configurer le shell.
+*   *Action* : Initialiser le contenu du NAS (Premier déploiement).
+    *   Commande : `./scripts/deploy_to_nas.sh`
+    *   *Note* : À faire une seule fois pour peupler le NAS vide.
+*   *Voir* : [01. Poste de Travail](wsl/index.md)
+
+### 3. Installation du Serveur (T420)
+Le moteur du lab.
+*   *Action* : Installer Ubuntu Server sur le T420.
+*   *Action* : Configurer le réseau et le SSH.
+*   *Action* : Lancer le bootstrap pour récupérer la config commune (Alias, Starship).
+*   *Voir* : [02. Le Serveur](ubuntu-server/index.md)
+
+### 4. Déploiement du Lab SRE
+La couche applicative.
+*   *Action* : Installer K3s sur le T420.
+*   *Action* : Déployer ArgoCD et la stack de monitoring.
+*   *Voir* : [03. Guide du Lab](setup-lab/index.md)
+
+---
+
+## ⚡ Démarrage Rapide (Maintenance)
+
+Une fois le lab installé, voici les commandes courantes :
+
+=== "Nouveau Client (WSL/Serveur)"
 
     ```bash
-    ~/github/sre-lab-infrastructure/scripts/setup_wsl_env.sh
+    # 1. Cloner le repo (si pas fait)
+    git clone https://github.com/NicoBaiGit/sre-lab-infrastructure.git ~/github/sre-lab-infrastructure
+
+    # 2. Lancer le bootstrap
+    ~/github/sre-lab-infrastructure/scripts/bootstrap_client.sh
+    
+    # 3. Recharger
     source ~/.bashrc
     ```
 
-=== "Sur le Serveur"
+=== "Mise à jour NAS"
 
     ```bash
-    ~/github/sre-lab-infrastructure/scripts/setup_server_env.sh
-    source ~/.bashrc
+    # Depuis votre poste principal
+    deploy_env
     ```
 
 ## 🛠️ Technologies

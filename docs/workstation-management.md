@@ -39,30 +39,26 @@ Vous voulez récupérer votre confort (Starship, Alias `k`, `ll`...) sans écras
 1.  **Copier le script de bootstrap** (via `scp` ou clé USB) :
     ```bash
     # Exemple depuis votre poste principal vers un serveur
-    scp ~/github/sre-lab-infrastructure/scripts/bootstrap_env.sh user@machine:~/
+    scp ~/github/sre-lab-infrastructure/scripts/bootstrap_client.sh user@machine:~/
     ```
 2.  **Lancer le script sur la cible** :
     ```bash
-    bash bootstrap_env.sh
+    bash bootstrap_client.sh
     ```
-    *   Il détecte l'OS (WSL ou Linux).
-    *   Il monte le NAS temporairement.
+    *   Il monte le NAS (et configure fstab).
     *   Il installe Starship et injecte les alias.
     *   Il configure `sudo` sans mot de passe (optionnel).
-    *   Il propose de rendre le montage NAS permanent.
 
 ### Cas B : Nouveau Poste de Travail Principal (Full Setup)
 *Cible : Nouvelle installation WSL vierge où vous allez développer.*
 
-Vous voulez tout : Git configuré, Clés SSH récupérées depuis Windows, Dépendances complètes.
-
-1.  **Cloner le repo** (ou le télécharger) :
+1.  **Cloner le repo** :
     ```bash
-    git clone https://github.com/NicoBaiGit/sre-lab-infrastructure.git
+    git clone https://github.com/NicoBaiGit/sre-lab-infrastructure.git ~/github/sre-lab-infrastructure
     ```
-2.  **Lancer le script complet** :
+2.  **Lancer le bootstrap** :
     ```bash
-    ./sre-lab-infrastructure/scripts/setup_wsl_env.sh
+    ~/github/sre-lab-infrastructure/scripts/bootstrap_client.sh
     ```
 
 ## 4. Récapitulatif des Commandes
@@ -71,8 +67,7 @@ Vous voulez tout : Git configuré, Clés SSH récupérées depuis Windows, Dépe
 | :--- | :--- | :--- |
 | **Mettre à jour le NAS** | `deploy_env` | Poste Principal (avec Git) |
 | **Recharger la config** | `source ~/.bashrc` | N'importe quelle machine |
-| **Installer sur un serveur** | `bash bootstrap_env.sh` | Nouvelle machine (via SCP) |
-| **Monter le NAS (Man)** | `sudo mount -t drvfs '\\IP\share' /mnt/nas` | WSL (si script non utilisé) |
+| **Installer sur un serveur** | `bash bootstrap_client.sh` | Nouvelle machine (via SCP) |
 | **Démarrer le Lab** | `start_lab` | Allume le serveur (Wake-on-LAN) |
 | **Arrêter le Lab** | `bye` (ou `~/SCRIPTS/stop_lab`) | Éteint le serveur proprement |
 
