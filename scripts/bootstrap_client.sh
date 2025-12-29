@@ -17,6 +17,17 @@ NAS_SHARE_PATH="//192.168.1.2/work" # A ADAPTER
 
 echo "🚀 Démarrage du Bootstrap Client SRE Lab..."
 
+# 0. Configuration Sudoers (NOPASSWD) - Prioritaire pour éviter les demandes de mot de passe répétées
+# Attention : Sécurité. Uniquement pour le Lab.
+echo "🔑 Configuration sudoers (NOPASSWD)..."
+if ! sudo grep -q "$USER ALL=(ALL) NOPASSWD:ALL" /etc/sudoers.d/$USER 2>/dev/null; then
+    echo "   Demande de mot de passe sudo pour la configuration initiale..."
+    echo "$USER ALL=(ALL) NOPASSWD:ALL" | sudo tee "/etc/sudoers.d/$USER" > /dev/null
+    echo "   ✅ Utilisateur $USER ajouté aux sudoers sans mot de passe."
+else
+    echo "   ✅ Sudoers déjà configuré."
+fi
+
 # 1. Vérification / Création du point de montage
 if [ ! -d "$NAS_MOUNT_POINT" ]; then
     echo "📂 Création du point de montage $NAS_MOUNT_POINT..."
@@ -36,6 +47,12 @@ else
     else
         IS_WSL=false
         echo "🐧 Environnement Linux standard détecté."
+    fi
+
+    # Installation des outils communs (Keychain pour SSH, etc.)
+    if ! dpkg -l | grep -q keychain; then
+        echo "📦 Installation de keychain (Gestionnaire d'agent SSH)..."
+        sudo apt-get update && sudo apt-get install -y keychain
     fi
 
     # Configuration spécifique WSL (drvfs) ou Linux (cifs)
@@ -148,20 +165,10 @@ else
     echo "   ✅ Configuration déjà présente dans .bashrc."
 fi
 
-# 4. Installation de Starship (si absent)
+# 5. Installation de Starship (si absent)
 if ! command -v starship &> /dev/null; then
     echo "🌟 Installation de Starship..."
     curl -sS https://starship.rs/install.sh | sh -s -- -y
-fi
-
-# 5. Configuration Sudoers (NOPASSWD)
-# Attention : Sécurité. Uniquement pour le Lab.
-echo "🔑 Configuration sudoers (NOPASSWD)..."
-if ! sudo grep -q "$USER ALL=(ALL) NOPASSWD:ALL" /etc/sudoers.d/$USER 2>/dev/null; then
-    echo "$USER ALL=(ALL) NOPASSWD:ALL" | sudo tee "/etc/sudoers.d/$USER" > /dev/null
-    echo "   ✅ Utilisateur $USER ajouté aux sudoers sans mot de passe."
-else
-    echo "   ✅ Sudoers déjà configuré."
 fi
 
 echo "🎉 Bootstrap terminé ! Veuillez recharger votre shell : source ~/.bashrc"

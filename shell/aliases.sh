@@ -45,3 +45,16 @@ alias update='sudo apt update && sudo apt upgrade -y'cd
 
 # --- Deploy ---
 alias deploy-lab='$HOME/github/sre-lab-infrastructure/scripts/deploy_to_nas.sh'
+
+# --- SSH Agent (Keychain) ---
+# Charge automatiquement les clés SSH au démarrage du shell (demande le mot de passe une seule fois par reboot)
+if command -v keychain &> /dev/null; then
+    # Détection automatique des clés privées (contiennent "PRIVATE KEY")
+    SSH_KEYS=$(grep -l "PRIVATE KEY" ~/.ssh/* 2>/dev/null | grep -v ".pub$")
+    
+    if [ -n "$SSH_KEYS" ]; then
+        eval $(keychain --eval --agents ssh --quick --quiet $SSH_KEYS)
+    else
+        eval $(keychain --eval --agents ssh --quick --quiet)
+    fi
+fi
