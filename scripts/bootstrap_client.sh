@@ -136,11 +136,31 @@ fi
 echo "🐚 Configuration du Shell (.bashrc)..."
 
 BASHRC="$HOME/.bashrc"
+SKEL_BASHRC="/etc/skel/.bashrc"
 MARKER="# --- SRE LAB CENTRALIZED CONFIG ---"
+BACKUP_DATE=$(date +%Y%m%d-%H%M%S)
+BACKUP_FILE="$BASHRC.backup.$BACKUP_DATE"
 
-if ! grep -q "$MARKER" "$BASHRC"; then
-    echo "   Injection de la configuration dans $BASHRC..."
-    cat <<EOT >> "$BASHRC"
+echo "   🧹 Nettoyage et réinitialisation de .bashrc..."
+
+# 1. Backup de l'existant
+if [ -f "$BASHRC" ]; then
+    cp "$BASHRC" "$BACKUP_FILE"
+    echo "   💾 Sauvegarde de sécurité : $BACKUP_FILE"
+fi
+
+# 2. Restauration depuis le squelette Ubuntu (Reset)
+if [ -f "$SKEL_BASHRC" ]; then
+    cp "$SKEL_BASHRC" "$BASHRC"
+    echo "   ✨ Restauration du .bashrc par défaut (Ubuntu)."
+else
+    echo "   ⚠️ /etc/skel/.bashrc introuvable. Création d'un fichier vide."
+    touch "$BASHRC"
+fi
+
+# 3. Injection de la configuration SRE
+echo "   💉 Injection de la configuration SRE Lab..."
+cat <<EOT >> "$BASHRC"
 
 $MARKER
 # Cette section charge la configuration depuis le NAS centralisé.
@@ -160,10 +180,8 @@ fi
 # export PATH=\$PATH:$NAS_MOUNT_POINT/scripts
 $MARKER
 EOT
-    echo "   ✅ Configuration injectée."
-else
-    echo "   ✅ Configuration déjà présente dans .bashrc."
-fi
+
+echo "   ✅ Configuration appliquée."
 
 # 5. Installation de Starship (si absent)
 if ! command -v starship &> /dev/null; then

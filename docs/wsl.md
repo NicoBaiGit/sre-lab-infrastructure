@@ -7,72 +7,53 @@ Cette page documente les bonnes pratiques et la configuration recommandée pour 
 Avant de lancer la configuration logicielle, il est recommandé d'optimiser l'instance WSL.
 
 ### Optimisation RAM
-Par défaut, WSL peut consommer une grande partie de la RAM disponible sur l'hôte Windows. Il est recommandé de limiter cette consommation (ex: 8 Go).
+Par défaut, WSL peut consommer une grande partie de la RAM disponible sur l'hôte Windows.
+Comme le T14 est utilisé principalement comme **poste de pilotage** (SSH, Kubectl, Git) et que les charges lourdes tournent sur le T420, nous pouvons limiter WSL pour laisser des ressources à Windows (Teams, Navigateur).
+
+**Recommandation pour 16 Go de RAM totale :**
+*   **4GB** : Suffisant pour du pilotage pur.
+*   **6GB** : Confortable (permet de lancer quelques conteneurs Docker de test localement).
 
 Fichier : `C:\Users\VotreUtilisateur\.wslconfig`
 ```ini
 [wsl2]
-memory=8GB
+memory=6GB
 ```
 > Redémarrez WSL : `wsl --shutdown`
 
-### Gestion des privilèges (Sudoers)
-Pour éviter de saisir le mot de passe à chaque commande `sudo` :
+## 2. Installation Initiale
+
+Pour récupérer le script d'automatisation, nous avons besoin de Git.
 
 ```bash
-echo "$USER ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/$USER
-```
-
-## 2. Mise à jour et Dépendances
-
-Mettez à jour le système et installez les paquets nécessaires (utilisés par le script d'automatisation).
-
-```bash
-sudo apt-get update && sudo apt-get install -y wget git
+sudo apt-get update && sudo apt-get install -y git
 ```
 
 ## 3. Configuration Automatisée (Recommandé)
 
-Nous utilisons un script de **Bootstrap** qui connecte votre WSL au NAS centralisé et configure tout l'environnement.
+Nous utilisons un script de **Bootstrap universel** qui connecte votre machine (WSL, VM Linux, Serveur) au NAS centralisé et configure tout l'environnement.
 
-Ce script va :
-*   Monter le NAS (`/mnt/nas`) automatiquement.
-*   Installer **Starship** (Prompt moderne).
-*   Configurer votre `.bashrc` pour charger les alias et la config depuis le NAS.
+Ce script détecte automatiquement l'environnement et va :
 
-Lancez simplement :
+*   **Monter le NAS** (`/mnt/nas`) automatiquement.
+*   **Installer Starship** (Prompt moderne).
+*   **Configurer votre `.bashrc`** pour charger les alias et la config depuis le NAS.
 
-```bash
-~/github/sre-lab-infrastructure/scripts/bootstrap_client.sh
-source ~/.bashrc
-```
+### Procédure
+
+1.  **Cloner le dépôt** :
+    ```bash
+    git clone https://github.com/NicoBaiGit/sre-lab-infrastructure.git ~/github/sre-lab-infrastructure
+    ```
+
+2.  **Lancer le script** :
+    ```bash
+    ~/github/sre-lab-infrastructure/scripts/bootstrap_client.sh
+    ```
 
 > **Note :** La première fois, le script vous demandera les identifiants du NAS pour créer le fichier `~/.smbcredentials`.
 
-## 4. Configuration Multi-WSL / Linux (Via NAS)
-
-Si vous avez une seconde instance WSL, une VM Linux ou un autre PC, et que vous souhaitez récupérer uniquement la configuration du shell (Alias + Starship) sans impacter vos clés SSH, Git ou Kubernetes existants.
-
-### Prérequis
-Avoir déployé la configuration sur le NAS depuis votre machine principale :
-```bash
-deploy_env
-```
-
-### Installation sur la nouvelle machine
-Utilisez le script de bootstrap universel :
-
-```bash
-# Cloner le repo (si possible)
-git clone https://github.com/NicoBaiGit/sre-lab-infrastructure.git ~/github/sre-lab-infrastructure
-
-# Lancer le bootstrap
-~/github/sre-lab-infrastructure/scripts/bootstrap_client.sh
-```
-
-Le script est disponible ici : [scripts/bootstrap_client.sh](../scripts/bootstrap_client.sh)
-
-## 5. Configuration Manuelle (Référence)
+## 4. Configuration Manuelle (Référence)
 
 Si vous préférez configurer manuellement ou comprendre ce que fait le script.
 
