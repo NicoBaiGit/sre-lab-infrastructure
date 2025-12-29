@@ -45,6 +45,7 @@ alias update='sudo apt update && sudo apt upgrade -y'cd
 
 # --- Deploy ---
 alias deploy-lab='/mnt/nas/deploy_to_nas.sh'
+alias reload='cd ~/github/sre-lab-infrastructure && git pull && ./scripts/bootstrap_client.sh'
 
 # --- SSH Agent (Keychain) ---
 # Charge automatiquement les clés SSH au démarrage du shell (demande le mot de passe une seule fois par reboot)
