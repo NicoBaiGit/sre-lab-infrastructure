@@ -29,37 +29,73 @@ if mount | grep -q "$NAS_MOUNT_POINT"; then
 else
     echo "⚠️ NAS non monté. Configuration du montage automatique..."
     
-    # Installation des dépendances CIFS
-    if ! dpkg -l | grep -q cifs-utils; then
-        echo "📦 Installation de cifs-utils..."
-        sudo apt-get update && sudo apt-get install -y cifs-utils
+    # Détection de l'environnement (WSL vs Linux Standard)
+    if grep -qi microsoft /proc/version; then
+        IS_WSL=true
+        echo "🪟 Environnement WSL détecté."
+    else
+        IS_WSL=false
+        echo "🐧 Environnement Linux standard détecté."
     fi
 
-    # Gestion des crédentials
-    CRED_FILE="$HOME/.smbcredentials"
-    if [ ! -f "$CRED_FILE" ]; then
-        echo "🔐 Configuration des accès NAS (création de $CRED_FILE)"
-        read -p "Utilisateur NAS : " NAS_USER
-        read -s -p "Mot de passe NAS : " NAS_PASS
-        echo ""
-        cat <<EOF > "$CRED_FILE"
+    # Configuration spécifique WSL (drvfs) ou Linux (cifs)
+    if [ "$IS_WSL" = true ]; then
+        # --- Mode WSL (drvfs) ---
+        # Utilise le système de fichiers Windows (plus performant et utilise l'auth Windows)
+        # Note: Nécessite que l'utilisateur Windows ait accès au NAS.
+        
+        # Conversion du chemin pour drvfs (\\IP\Share)
+        # On échappe les backslashes pour bash
+        NAS_SRC="\\\\$NAS_IP\\work"
+        
+        CURRENT_UID=$(id -u)
+        CURRENT_GID=$(id -g)
+        
+        # Pas de credentials file nécessaire pour drvfs (utilise l'auth Windows)
+        FSTAB_ENTRY="$NAS_SRC $NAS_MOUNT_POINT drvfs defaults,uid=$CURRENT_UID,gid=$CURRENT_GID 0 0"
+        
+        echo "   Mode: drvfs (Pont Windows)"
+
+    else
+        # --- Mode Linux (cifs) ---
+        # Utilise cifs-utils et un fichier de crédentials
+        
+        NAS_SRC="$NAS_SHARE_PATH"
+        
+        # Installation des dépendances CIFS
+        if ! dpkg -l | grep -q cifs-utils; then
+            echo "📦 Installation de cifs-utils..."
+            sudo apt-get update && sudo apt-get install -y cifs-utils
+        fi
+
+        # Gestion des crédentials
+        CRED_FILE="$HOME/.smbcredentials"
+        if [ ! -f "$CRED_FILE" ]; then
+            echo "🔐 Configuration des accès NAS (création de $CRED_FILE)"
+            read -p "Utilisateur NAS : " NAS_USER
+            read -s -p "Mot de passe NAS : " NAS_PASS
+            echo ""
+            cat <<EOF > "$CRED_FILE"
 username=$NAS_USER
 password=$NAS_PASS
 EOF
-        chmod 600 "$CRED_FILE"
-    fi
+            chmod 600 "$CRED_FILE"
+        fi
 
-    # Ajout à fstab si absent
-    # On utilise l'UID/GID de l'utilisateur courant pour que les fichiers lui appartiennent
-    CURRENT_UID=$(id -u)
-    CURRENT_GID=$(id -g)
-    # Utilisation de vers=2.0 pour une meilleure compatibilité (erreur 95 souvent liée à 3.0 sur certains setups)
-    FSTAB_ENTRY="$NAS_SHARE_PATH $NAS_MOUNT_POINT cifs credentials=$CRED_FILE,uid=$CURRENT_UID,gid=$CURRENT_GID,iocharset=utf8,vers=2.0 0 0"
+        # Ajout à fstab si absent
+        CURRENT_UID=$(id -u)
+        CURRENT_GID=$(id -g)
+        # Utilisation de vers=3.0 par défaut (standard moderne), fallback possible si échec
+        FSTAB_ENTRY="$NAS_SRC $NAS_MOUNT_POINT cifs credentials=$CRED_FILE,uid=$CURRENT_UID,gid=$CURRENT_GID,iocharset=utf8,vers=3.0 0 0"
+        
+        echo "   Mode: cifs (Linux Native)"
+    fi
     
-    if ! grep -q "$NAS_SHARE_PATH" /etc/fstab; then
+    # Application dans fstab (Commun)
+    if ! grep -q "$NAS_MOUNT_POINT" /etc/fstab; then
         echo "📝 Ajout de l'entrée dans /etc/fstab..."
         echo "$FSTAB_ENTRY" | sudo tee -a /etc/fstab
-        # Rechargement de systemd pour prendre en compte fstab
+        
         if command -v systemctl &> /dev/null; then
             sudo systemctl daemon-reload
         fi
