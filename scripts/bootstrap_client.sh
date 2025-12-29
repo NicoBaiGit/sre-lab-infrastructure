@@ -53,11 +53,16 @@ EOF
     # On utilise l'UID/GID de l'utilisateur courant pour que les fichiers lui appartiennent
     CURRENT_UID=$(id -u)
     CURRENT_GID=$(id -g)
-    FSTAB_ENTRY="$NAS_SHARE_PATH $NAS_MOUNT_POINT cifs credentials=$CRED_FILE,uid=$CURRENT_UID,gid=$CURRENT_GID,iocharset=utf8,vers=3.0 0 0"
+    # Utilisation de vers=2.0 pour une meilleure compatibilité (erreur 95 souvent liée à 3.0 sur certains setups)
+    FSTAB_ENTRY="$NAS_SHARE_PATH $NAS_MOUNT_POINT cifs credentials=$CRED_FILE,uid=$CURRENT_UID,gid=$CURRENT_GID,iocharset=utf8,vers=2.0 0 0"
     
     if ! grep -q "$NAS_SHARE_PATH" /etc/fstab; then
         echo "📝 Ajout de l'entrée dans /etc/fstab..."
         echo "$FSTAB_ENTRY" | sudo tee -a /etc/fstab
+        # Rechargement de systemd pour prendre en compte fstab
+        if command -v systemctl &> /dev/null; then
+            sudo systemctl daemon-reload
+        fi
     fi
 
     # Montage
