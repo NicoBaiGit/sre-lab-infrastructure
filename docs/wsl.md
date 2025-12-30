@@ -83,6 +83,13 @@ chmod 644 ~/.ssh/id_rsa.pub
 
 > **Important** : Une fois les clés copiées, lancez `reload` (ou relancez le script de bootstrap) pour qu'elles soient prises en compte par l'agent SSH.
 
+!!! tip "Astuce : Gestion de la Passphrase (ssh-add)"
+    Si votre clé est protégée par une passphrase (recommandé), vous pouvez l'ajouter à l'agent SSH pour ne la saisir qu'une seule fois par session :
+    ```bash
+    ssh-add ~/.ssh/votre_cle_privee
+    ```
+    C'est le compromis idéal entre sécurité (clé chiffrée sur disque) et confort (pas de mot de passe à chaque commande Git/SSH).
+
 ### 4.2 Identité Git
 Configurez votre identité pour vos commits :
 
