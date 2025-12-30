@@ -25,7 +25,7 @@ Infrastructure as Code • Kubernetes • GitOps • Observabilité
 Assurez-vous que le NAS est prêt et accessible.
 ```bash
 # Depuis votre poste principal (WSL)
-./scripts/deploy_to_nas.sh
+./scripts/nas/deploy_to_nas.sh
 ```
 
 ### 2. Bootstrap d'un nouveau client (WSL, Serveur, VM)
@@ -36,7 +36,7 @@ Ce que fait le script (Automatisé) :
 *   Configure `.bashrc` pour charger les alias et Starship depuis le NAS.
 ```bash
 # Sur la machine cible
-./scripts/bootstrap_client.sh
+./scripts/common/bootstrap_client.sh
 source ~/.bashrc
 ```
 

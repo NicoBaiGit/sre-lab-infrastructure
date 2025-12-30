@@ -41,11 +41,11 @@ alias start_lab='/mnt/nas/start_lab.sh'
 alias deploy_env='/mnt/nas/deploy_to_nas.sh'
 
 # --- System ---
-alias update='sudo apt update && sudo apt upgrade -y'cd 
+alias update='sudo apt update && sudo apt upgrade -y'
 
 # --- Deploy ---
 alias deploy-lab='/mnt/nas/deploy_to_nas.sh'
-alias reload='cd ~/github/sre-lab-infrastructure && git pull && ./scripts/bootstrap_client.sh'
+alias reload='cd ~/github/sre-lab-infrastructure && git pull && ./scripts/common/bootstrap_client.sh'
 
 # --- SSH Agent (Keychain) ---
 # Charge automatiquement les clés SSH au démarrage du shell (demande le mot de passe une seule fois par reboot)

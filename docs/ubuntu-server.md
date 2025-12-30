@@ -44,13 +44,21 @@ ssh-copy-id -i ~/.ssh/id_rsa.pub nicolab@<IP-DU-T420>
 Nous utilisons le même script de **Bootstrap** que pour WSL. Il va monter le NAS et configurer le shell.
 
 ```bash
-# Cloner le repo si nécessaire
-git clone https://github.com/NicoBaiGit/sre-lab-infrastructure.git ~/github/sre-lab-infrastructure
+# Cloner le repo (ou le mettre à jour s'il existe déjà)
+if [ -d ~/github/sre-lab-infrastructure ]; then
+    cd ~/github/sre-lab-infrastructure && git pull
+else
+    git clone https://github.com/NicoBaiGit/sre-lab-infrastructure.git ~/github/sre-lab-infrastructure
+fi
 
 # Lancer le bootstrap
-~/github/sre-lab-infrastructure/scripts/bootstrap_client.sh
+~/github/sre-lab-infrastructure/scripts/common/bootstrap_client.sh
+
+# Recharger le shell
 source ~/.bashrc
 ```
+
+> **Astuce** : Une fois cette configuration initiale faite, vous pourrez simplement taper `reload` pour mettre à jour votre environnement (alias, prompt) et recharger la configuration.
 
 Ce script va :  
 1.  Monter le NAS sur `/mnt/nas` (et configurer `/etc/fstab`).  
@@ -63,19 +71,11 @@ Ce script va :
 Pour les outils système de base (avant l'environnement shell), vous pouvez utiliser ce script :
 
 ```bash
-#!/bin/bash
-# Mise à jour
-sudo apt update && sudo apt upgrade -y
-
-# Outils de base
-sudo apt install -y curl git htop vim neofetch
-
-# Désactivation du Swap (Requis pour K8s)
-sudo swapoff -a
-sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
-
-echo "Serveur prêt !"
+# Lancer le script d'initialisation
+~/github/sre-lab-infrastructure/scripts/server/init-t420.sh
 ```
+
+Ce script installe `curl`, `git`, `htop`, `vim`, `neofetch` et désactive le Swap.
 
 ## 5. Optimisation "Headless" (Laptop Server)
 

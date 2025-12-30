@@ -42,17 +42,24 @@ Ce script détecte automatiquement l'environnement et va :
 
 ### Procédure
 
-1.  **Cloner le dépôt** :
+1.  **Récupérer le code** :
     ```bash
-    git clone https://github.com/NicoBaiGit/sre-lab-infrastructure.git ~/github/sre-lab-infrastructure
+    # Cloner (ou mettre à jour)
+    if [ -d ~/github/sre-lab-infrastructure ]; then
+        cd ~/github/sre-lab-infrastructure && git pull
+    else
+        git clone https://github.com/NicoBaiGit/sre-lab-infrastructure.git ~/github/sre-lab-infrastructure
+    fi
     ```
 
 2.  **Lancer le script** :
     ```bash
-    ~/github/sre-lab-infrastructure/scripts/bootstrap_client.sh
+    ~/github/sre-lab-infrastructure/scripts/common/bootstrap_client.sh
+    source ~/.bashrc
     ```
 
-> **Note :** Le script est idempotent. Vous pouvez le relancer à tout moment pour mettre à jour votre configuration ou réparer votre environnement.
+> **Note :** Le script est idempotent. Vous pouvez le relancer à tout moment.
+> **Astuce :** Par la suite, utilisez simplement l'alias `reload` pour mettre à jour votre environnement.
 
 ## 4. Configuration Post-Installation (Manuelle)
 
@@ -79,6 +86,29 @@ Configurez votre identité pour vos commits :
 git config --global user.name "Votre Nom"
 git config --global user.email "votre.email@exemple.com"
 ```
+
+### 4.3 Connexion SSH sans mot de passe (Vers le Serveur)
+Pour ne pas avoir à saisir votre mot de passe à chaque connexion vers le T420, vous devez autoriser votre clé SSH sur le serveur.
+
+**1. Copier la clé publique vers le serveur :**
+```bash
+# Remplacez par le nom de votre clé (ex: id_rsa.pub ou nicolas.bailleul.wrk.pub)
+ssh-copy-id -i ~/.ssh/id_rsa.pub nicolab@192.168.1.120
+```
+
+**2. Configuration automatique (Optionnel mais recommandé) :**
+Si votre clé ne s'appelle pas `id_rsa`, SSH ne la trouvera pas tout seul. Créez un fichier `config` pour lui dire quelle clé utiliser.
+
+Fichier : `~/.ssh/config`
+```ssh
+Host t420 192.168.1.120
+    HostName 192.168.1.120
+    User nicolab
+    IdentityFile ~/.ssh/votre_cle_privee
+```
+*(Remplacez `votre_cle_privee` par le nom de votre fichier de clé, sans .pub)*.
+
+Désormais, `ssh t420` vous connectera instantanément.
 
 ## 5. Utilisation Quotidienne
 
