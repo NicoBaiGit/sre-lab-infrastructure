@@ -25,7 +25,8 @@ Démarrer sur la clé (`F12`) et suivre l'installeur :
 *   **Réseau** : Ethernet filaire (DHCP).
 *   **Stockage** : "Use an entire disk" (Attention, efface tout).
 *   **SSH** : **Cocher "Install OpenSSH Server"**.
-*   **Snaps optionnels** : **Ne rien cocher** (pas de MicroK8s, pas de Nextcloud). Nous installerons nos propres outils pour maîtriser les ressources.
+*   **Snaps optionnels** : **Ne rien cocher** (pas de MicroK8s, pas de Nextcloud...).  
+    Nous installerons nos propres outils pour maîtriser les ressources.
 
 ## 4. Configuration Post-Installation (Depuis le poste client)
 
@@ -51,11 +52,11 @@ git clone https://github.com/NicoBaiGit/sre-lab-infrastructure.git ~/github/sre-
 source ~/.bashrc
 ```
 
-Ce script va :
-1.  Monter le NAS sur `/mnt/nas` (et configurer `/etc/fstab`).
-2.  Installer **Starship**.
-3.  Configurer les alias partagés.
-2.  Configurer `.bashrc` pour utiliser la configuration centralisée sur le NAS.
+Ce script va :  
+1.  Monter le NAS sur `/mnt/nas` (et configurer `/etc/fstab`).  
+2.  Installer **Starship**.  
+3.  Configurer les alias partagés.  
+4.  Configurer `.bashrc` pour utiliser la configuration centralisée sur le NAS.
 
 ### Script d'initialisation système (init-t420.sh)
 

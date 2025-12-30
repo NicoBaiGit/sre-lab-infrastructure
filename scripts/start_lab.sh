@@ -47,17 +47,33 @@ echo "=== Démarrage de la Session Lab SRE ==="
 
 # 1. Démarrage du serveur (Wake-on-LAN)
 echo "[1/3] Envoi du Magic Packet (WoL) à $MAC_ADDR..."
-# WSL2 est derrière un NAT, le broadcast standard ne passe pas.
-# On utilise PowerShell pour envoyer le paquet depuis Windows.
-powershell.exe -Command "
-\$mac = '$MAC_ADDR'
-\$macBytes = \$mac -split '[:-]' | ForEach-Object { [byte]('0x' + \$_) }
-\$packet = [byte[]](,0xFF * 6) + \$macBytes * 16
-\$client = New-Object System.Net.Sockets.UdpClient
-\$client.Connect(([System.Net.IPAddress]::Broadcast), 9)
-\$client.Send(\$packet, \$packet.Length)
-\$client.Close()
-"
+
+WOL_SENT=false
+
+# Méthode 1 : PowerShell (Windows) - Recommandé pour WSL2 (contourne le NAT)
+# On teste d'abord si powershell.exe est exécutable pour éviter les erreurs "Exec format error"
+if command -v powershell.exe &> /dev/null && powershell.exe -Command "exit" &> /dev/null; then
+    powershell.exe -Command "
+    \$mac = '$MAC_ADDR'
+    \$macBytes = \$mac -split '[:-]' | ForEach-Object { [byte]('0x' + \$_) }
+    \$packet = [byte[]](,0xFF * 6) + \$macBytes * 16
+    \$client = New-Object System.Net.Sockets.UdpClient
+    \$client.Connect(([System.Net.IPAddress]::Broadcast), 9)
+    \$client.Send(\$packet, \$packet.Length)
+    \$client.Close()
+    " 2> /dev/null
+    
+    if [ $? -eq 0 ]; then
+        echo "   ✅ WoL envoyé via Windows (PowerShell)."
+        WOL_SENT=true
+    fi
+fi
+
+# Méthode 2 : wakeonlan (Linux) - Fallback
+if [ "$WOL_SENT" = "false" ]; then
+    echo "   ⚠️ PowerShell indisponible. Utilisation de 'wakeonlan' (Linux native)..."
+    wakeonlan "$MAC_ADDR"
+fi
 
 # 2. Attente de la disponibilité
 echo "[2/3] Attente du démarrage du serveur ($SERVER_IP)..."

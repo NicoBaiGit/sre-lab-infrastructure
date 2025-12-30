@@ -4,68 +4,33 @@ Ce guide explique comment gérer, déployer et synchroniser votre environnement 
 
 ## 1. Architecture de la Configuration
 
-L'objectif est d'avoir une expérience unifiée (même prompt, mêmes alias) quel que soit le terminal utilisé, tout en respectant les spécificités de chaque machine (clés SSH différentes, configs Git pro/perso).
+L'objectif est d'avoir une expérience unifiée (même prompt, mêmes alias) quel que soit le terminal utilisé.
 
 *   **Source de Vérité** : Ce dépôt Git (`sre-lab-infrastructure`).
 *   **Point de Distribution** : Votre NAS (dossier partagé `/work`).
 *   **Clients** : Vos instances WSL, vos serveurs Linux, vos VMs.
+*   **Automatisation** : Un script unique `bootstrap_client.sh` gère la configuration de chaque client.
 
 ## 2. Workflow de Mise à Jour
 
 Toute modification de configuration (nouvel alias, changement de thème Starship) doit suivre ce cycle :
 
 1.  **Modifier** le fichier dans ce dépôt (ex: `shell/aliases.sh`).
-2.  **Tester** localement (`source shell/aliases.sh`).
+2.  **Tester** localement.
 3.  **Commiter & Pousser** sur Git.
-4.  **Déployer** sur le NAS depuis votre poste principal.
-
-### Commande de Déploiement (Poste Principal)
-Depuis votre WSL principal (celui qui a le repo Git) :
-
-```bash
-deploy_env
-```
-> Cette commande copie les fichiers de config et les scripts d'installation vers le NAS.
-
-## 3. Scénarios d'Installation
-
-Choisissez le scénario correspondant à votre besoin sur la nouvelle machine.
-
-### Cas A : Nouvelle Machine (Besoin juste du Shell/Alias)
-*Cible : Serveur Linux, VM temporaire, WSL secondaire.*
-
-Vous voulez récupérer votre confort (Starship, Alias `k`, `ll`...) sans écraser la configuration système (SSH, Git User).
-
-1.  **Copier le script de bootstrap** (via `scp` ou clé USB) :
+4.  **Déployer** sur le NAS depuis votre poste principal :
     ```bash
-    # Exemple depuis votre poste principal vers un serveur
-    scp ~/github/sre-lab-infrastructure/scripts/bootstrap_client.sh user@machine:~/
+    deploy_env
     ```
-2.  **Lancer le script sur la cible** :
-    ```bash
-    bash bootstrap_client.sh
-    ```
-    *   Il monte le NAS (et configure fstab).
-### Cas B : Mise à jour d'un Client existant
-Si vous avez mis à jour le script `bootstrap_client.sh` (ex: ajout de keychain, fix WSL) et que vous voulez l'appliquer sur vos machines :
 
-1.  **Récupérer la dernière version** :
-    ```bash
-    cd ~/github/sre-lab-infrastructure
-    git pull
-    ```
-2.  **Relancer le script** :
-    ```bash
-    ./scripts/bootstrap_client.sh
-    ```
-    > Le script est conçu pour être relancé autant de fois que nécessaire (idempotent). Il détectera ce qui est déjà fait et appliquera uniquement les nouveautés.
+## 3. Installation sur une Nouvelle Machine
 
-## 4. Dépannage Courant
+Grâce au script de bootstrap universel, l'installation est standardisée.
 
-### Cas B : Nouveau Poste de Travail Principal (Full Setup)
-*Cible : Nouvelle installation WSL vierge où vous allez développer.*
+### Méthode Recommandée (Git)
+Si la machine a accès à Internet et Git :
 
-1.  **Cloner le repo** :
+1.  **Cloner le dépôt** :
     ```bash
     git clone https://github.com/NicoBaiGit/sre-lab-infrastructure.git ~/github/sre-lab-infrastructure
     ```
@@ -74,34 +39,54 @@ Si vous avez mis à jour le script `bootstrap_client.sh` (ex: ajout de keychain,
     ~/github/sre-lab-infrastructure/scripts/bootstrap_client.sh
     ```
 
-## 4. Récapitulatif des Commandes
+### Méthode Alternative (Sans Git / Offline)
+Si la machine a accès au NAS mais pas à Git, ou pour un déploiement rapide :
+
+1.  **Monter le NAS** (si ce n'est pas déjà fait) ou copier le script via SCP.
+2.  **Lancer le script** directement depuis le NAS :
+    ```bash
+    /mnt/nas/bootstrap_client.sh
+    ```
+
+> **Ce que fait le script (Automatisé)** :
+> *   Configure `sudo` sans mot de passe (pour le lab).
+> *   Monte le NAS automatiquement (`cifs` ou `drvfs` selon l'OS).
+> *   Installe `keychain` pour gérer vos clés SSH.
+> *   Configure `.bashrc` pour charger les alias et Starship depuis le NAS.
+
+## 4. Mises à jour des Clients
+
+Pour mettre à jour la configuration sur n'importe quel client (récupérer les nouveaux alias, etc.) :
+
+```bash
+reload
+```
+
+> **Note :** Cet alias exécute `git pull` (si applicable) et relance le script de bootstrap pour s'assurer que tout est conforme.
+
+## 5. Gestion SSH (Semi-Automatisée)
+
+La gestion des agents SSH est **automatisée** via `keychain` (installé par le script). Vous ne taperez votre mot de passe de clé qu'une seule fois par redémarrage.
+
+### Action Manuelle Requise
+Le script ne peut pas deviner sur quels serveurs vous voulez vous connecter. Vous devez donc propager votre clé publique **une seule fois** vers chaque nouveau serveur cible :
+
+```bash
+ssh-copy-id user@mon-nouveau-serveur
+```
+
+Une fois cela fait, la connexion sera automatique grâce à l'agent.
+
+## 6. Récapitulatif des Commandes
 
 | Action | Commande | Contexte |
 | :--- | :--- | :--- |
-| **Mettre à jour le NAS** | `deploy_env` | Poste Principal (avec Git) |
-| **Recharger la config** | `source ~/.bashrc` | N'importe quelle machine |
-| **Installer sur un serveur** | `bash bootstrap_client.sh` | Nouvelle machine (via SCP) |
-| **Démarrer le Lab** | `start_lab` | Allume le serveur (Wake-on-LAN) |
-| **Arrêter le Lab** | `bye` (ou `~/SCRIPTS/stop_lab`) | Éteint le serveur proprement |
+| **Mettre à jour le NAS** | `deploy_env` | Poste Principal (après modif Git) |
+| **Mettre à jour un client** | `reload` | N'importe quel client |
+| **Démarrer le Lab** | `start_lab` | Allume le serveur (WOL) |
+| **Arrêter le Lab** | `bye` | Éteint le serveur proprement |
 
-## 5. Dépannage SSH (Mot de passe demandé)
+## 7. Bonnes Pratiques
 
-Si les scripts comme `stop_lab` ou la connexion SSH vous demandent un mot de passe alors que tout devrait être automatique :
-
-1.  **Vérifier l'agent SSH** :
-    ```bash
-    ssh-add -l
-    ```
-    *Si vide ("The agent has no identities"), ajoutez votre clé :* `ssh-add ~/.ssh/id_rsa`
-
-2.  **Vérifier la clé sur le serveur** :
-    Assurez-vous d'avoir copié votre clé publique sur le serveur cible :
-    ```bash
-    ssh-copy-id user@serveur
-    ```
-
-## 6. Bonnes Pratiques
-
-*   **Ne modifiez jamais** les fichiers directement sur le NAS. Ils seront écrasés au prochain `deploy_env`. Modifiez toujours dans le dépôt Git.
-*   **Alias Locaux** : Si vous avez besoin d'alias spécifiques à une machine qui ne doivent pas être partagés, mettez-les dans `~/.bash_aliases` ou à la fin de votre `.bashrc` (après le bloc SRE Lab). Ils seront prioritaires.
-*   **Sudo** : Le script de bootstrap configure `sudo` sans mot de passe pour faciliter l'administration. Si c'est un serveur de prod critique, vérifiez si c'est conforme à votre politique de sécurité.
+*   **Ne modifiez jamais** les fichiers directement sur le NAS. Ils seront écrasés au prochain `deploy_env`.
+*   **Alias Locaux** : Si vous avez besoin d'alias spécifiques à une machine, mettez-les dans `~/.bash_aliases`. Ils seront chargés avant la configuration commune.

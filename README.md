@@ -29,7 +29,11 @@ Assurez-vous que le NAS est prêt et accessible.
 ```
 
 ### 2. Bootstrap d'un nouveau client (WSL, Serveur, VM)
-Ce script connecte la machine au NAS et configure le shell.
+Ce que fait le script (Automatisé) :
+*   Configure `sudo` sans mot de passe (pour le lab).
+*   Monte le NAS automatiquement (`cifs` ou `drvfs` selon l'OS).
+*   Installe `keychain` pour gérer vos clés SSH.
+*   Configure `.bashrc` pour charger les alias et Starship depuis le NAS.
 ```bash
 # Sur la machine cible
 ./scripts/bootstrap_client.sh
