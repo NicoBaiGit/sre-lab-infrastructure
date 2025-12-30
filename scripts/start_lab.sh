@@ -51,9 +51,18 @@ echo "[1/3] Envoi du Magic Packet (WoL) à $MAC_ADDR..."
 WOL_SENT=false
 
 # Méthode 1 : PowerShell (Windows) - Recommandé pour WSL2 (contourne le NAT)
-# On teste d'abord si powershell.exe est exécutable pour éviter les erreurs "Exec format error"
-if command -v powershell.exe &> /dev/null && powershell.exe -Command "exit" &> /dev/null; then
-    powershell.exe -Command "
+# Recherche de l'exécutable PowerShell (PowerShell 7 'pwsh.exe' ou Windows PowerShell 'powershell.exe')
+PS_BIN=""
+if command -v pwsh.exe &> /dev/null && pwsh.exe -Command "exit" &> /dev/null; then
+    PS_BIN="pwsh.exe"
+    echo "   ℹ️  PowerShell 7 détecté ($PS_BIN)."
+elif command -v powershell.exe &> /dev/null && powershell.exe -Command "exit" &> /dev/null; then
+    PS_BIN="powershell.exe"
+    echo "   ℹ️  Windows PowerShell détecté ($PS_BIN)."
+fi
+
+if [ -n "$PS_BIN" ]; then
+    $PS_BIN -Command "
     \$mac = '$MAC_ADDR'
     \$macBytes = \$mac -split '[:-]' | ForEach-Object { [byte]('0x' + \$_) }
     \$packet = [byte[]](,0xFF * 6) + \$macBytes * 16
@@ -64,7 +73,7 @@ if command -v powershell.exe &> /dev/null && powershell.exe -Command "exit" &> /
     " 2> /dev/null
     
     if [ $? -eq 0 ]; then
-        echo "   ✅ WoL envoyé via Windows (PowerShell)."
+        echo "   ✅ WoL envoyé via Windows ($PS_BIN)."
         WOL_SENT=true
     fi
 fi
