@@ -20,21 +20,21 @@ Le montage est géré automatiquement par `/etc/fstab` (configuré par `bootstra
 
 Pour mettre à jour la configuration commune :
 1.  Modifiez les fichiers dans votre repo Git local (`~/github/sre-lab-infrastructure`).
-2.  Poussez vers le NAS : `deploy_env`
+2.  Poussez vers le NAS : `deploy_lab`
 
-## � Mise à jour de la Configuration
+##  Mise à jour de la Configuration
 
 ### 1. Mettre à jour le NAS (Depuis le poste de Dev)
 Si vous avez modifié des alias ou la config Starship dans le code source :
 1.  `git pull` (pour être à jour)
-2.  `deploy-lab` (alias pour `deploy_to_nas.sh`)
+2.  `deploy_lab` (alias pour `deploy_to_nas.sh`)
 
 ### 2. Mettre à jour un Client (WSL, Serveur...)
 Si vous voulez récupérer la dernière version des scripts ou réparer la config sur une machine :
 ```bash
 cd ~/github/sre-lab-infrastructure
 git pull
-./scripts/bootstrap_client.sh
+./scripts/common/bootstrap_client.sh
 ```
 *(Le script est idempotent : il peut être relancé sans danger pour mettre à jour fstab, installer les nouveaux outils comme keychain, etc.)*
 
@@ -63,9 +63,9 @@ git pull
 | | `kex` | `kubectl exec -it` | Shell dans pod |
 | **Système** | `update` | `apt update && upgrade` | Mise à jour APT |
 | | `nano` | `vim` | Force l'habitude VIM ;) |
-| **Lab SRE** | `start_lab` | `~/SCRIPTS/start_lab` | Démarrer (WOL) |
+| **Lab SRE** | `start_lab` | `/mnt/nas/start_lab.sh` | Démarrer (WOL) |
 | | `bye` | `stop_lab; exit` | Arrêter et quitter |
-| | `deploy-lab` | `.../deploy_to_nas.sh` | Déployer config sur NAS |
+| | `deploy_lab` | `.../deploy_to_nas.sh` | Déployer config sur NAS |
 
 ## ☸️ Kubernetes (k3s)
 
@@ -81,7 +81,7 @@ git pull
 
 2.  **Les alias ne fonctionnent pas ?**
     *   Vérifiez si le fichier `/mnt/nas/aliases.sh` existe.
-    *   Relancez le déploiement : `deploy_env`.
+    *   Relancez le déploiement : `deploy_lab`.
 
 3.  **Problème de droits (sudo) ?**
     *   Relancez le script de bootstrap : `sudo ./bootstrap_client.sh`.

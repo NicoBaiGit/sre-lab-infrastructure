@@ -38,13 +38,12 @@ alias nano="vim"
 # --- SRE Lab Utils ---
 alias bye='/mnt/nas/stop_lab.sh; exit'
 alias start_lab='/mnt/nas/start_lab.sh'
-alias deploy_env='/mnt/nas/deploy_to_nas.sh'
+alias deploy_lab='$HOME/github/sre-lab-infrastructure/scripts/nas/deploy_to_nas.sh'
 
 # --- System ---
 alias update='sudo apt update && sudo apt upgrade -y'
 
 # --- Deploy ---
-alias deploy-lab='/mnt/nas/deploy_to_nas.sh'
 alias reload='cd ~/github/sre-lab-infrastructure && git pull && ./scripts/common/bootstrap_client.sh'
 
 # --- SSH Agent (Keychain) ---

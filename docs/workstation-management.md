@@ -20,7 +20,7 @@ Toute modification de configuration (nouvel alias, changement de thème Starship
 3.  **Commiter & Pousser** sur Git.
 4.  **Déployer** sur le NAS depuis votre poste principal :
     ```bash
-    deploy_env
+    deploy_lab
     ```
 
 ## 3. Installation sur une Nouvelle Machine
@@ -36,7 +36,7 @@ Si la machine a accès à Internet et Git :
     ```
 2.  **Lancer le bootstrap** :
     ```bash
-    ~/github/sre-lab-infrastructure/scripts/bootstrap_client.sh
+    ~/github/sre-lab-infrastructure/scripts/common/bootstrap_client.sh
     ```
 
 ### Méthode Alternative (Sans Git / Offline)
@@ -81,12 +81,12 @@ Une fois cela fait, la connexion sera automatique grâce à l'agent.
 
 | Action | Commande | Contexte |
 | :--- | :--- | :--- |
-| **Mettre à jour le NAS** | `deploy_env` | Poste Principal (après modif Git) |
+| **Mettre à jour le NAS** | `deploy_lab` | Poste Principal (après modif Git) |
 | **Mettre à jour un client** | `reload` | N'importe quel client |
 | **Démarrer le Lab** | `start_lab` | Allume le serveur (WOL) |
 | **Arrêter le Lab** | `bye` | Éteint le serveur proprement |
 
 ## 7. Bonnes Pratiques
 
-*   **Ne modifiez jamais** les fichiers directement sur le NAS. Ils seront écrasés au prochain `deploy_env`.
+*   **Ne modifiez jamais** les fichiers directement sur le NAS. Ils seront écrasés au prochain `deploy_lab`.
 *   **Alias Locaux** : Si vous avez besoin d'alias spécifiques à une machine, mettez-les dans `~/.bash_aliases`. Ils seront chargés avant la configuration commune.

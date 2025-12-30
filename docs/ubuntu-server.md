@@ -34,9 +34,11 @@ Une fois le serveur redémarré, tout se gère depuis votre poste de travail (ex
 
 ### Connexion SSH sans mot de passe
 
+Pour faciliter l'administration, configurez l'accès SSH sans mot de passe depuis votre poste client (voir la documentation [WSL](wsl.md#43-connexion-ssh-sans-mot-de-passe-vers-le-serveur) pour les détails complets).
+
 ```bash
-# Remplacer par l'IP réelle du T420
-ssh-copy-id -i ~/.ssh/id_rsa.pub nicolab@<IP-DU-T420>
+# Exemple rapide (depuis votre poste client)
+ssh-copy-id -i ~/.ssh/nicolas.bailleul.wrk nicoperso@192.168.1.15
 ```
 
 ### Configuration de l'environnement (Starship + Alias)

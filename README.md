@@ -49,14 +49,14 @@ Nous utilisons le NAS comme source de vérité pour la configuration du shell (A
 1.  **Modification** : Editez les fichiers dans ce dépôt.
     *   Alias : `shell/aliases.sh`
     *   Prompt : `config/starship.toml`
-2.  **Déploiement** : Depuis votre WSL, lancez `deploy_env`.
+2.  **Déploiement** : Depuis votre WSL, lancez `deploy_lab`.
     *   Cela copie les fichiers vers le NAS (`/mnt/nas`).
 3.  **Consommation** : Les machines (WSL, Serveurs) chargent la configuration depuis le NAS au démarrage du shell.
 
 ### Scripts d'installation
 
-*   **Bootstrap Universel** : `scripts/bootstrap_client.sh` (Script unique pour WSL et Serveur. Monte le NAS, installe Starship, configure le shell).
-*   **Déploiement** : `scripts/deploy_to_nas.sh` (Copie la configuration locale vers le NAS).
+*   **Bootstrap Universel** : `scripts/common/bootstrap_client.sh` (Script unique pour WSL et Serveur. Monte le NAS, installe Starship, configure le shell).
+*   **Déploiement** : `scripts/nas/deploy_to_nas.sh` (Copie la configuration locale vers le NAS).
 
 ## 🛠️ Développement de la Documentation
 

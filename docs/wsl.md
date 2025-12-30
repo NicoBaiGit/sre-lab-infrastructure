@@ -66,7 +66,9 @@ Ce script détecte automatiquement l'environnement et va :
 Certaines étapes ne peuvent pas être automatisées car elles touchent à vos secrets ou à votre identité personnelle.
 
 ### 4.1 Récupération des Clés SSH
-Le script installe l'agent SSH (`keychain`), mais vous devez lui fournir vos clés. Si vous avez déjà des clés sous Windows, copiez-les :
+Le script de bootstrap configure automatiquement l'agent SSH (`keychain`) pour toutes les clés privées qu'il trouve dans `~/.ssh`.
+
+Il vous suffit donc de copier vos clés (depuis Windows par exemple) vers WSL :
 
 ```bash
 mkdir -p ~/.ssh && chmod 700 ~/.ssh
@@ -79,6 +81,8 @@ chmod 600 ~/.ssh/id_rsa
 chmod 644 ~/.ssh/id_rsa.pub
 ```
 
+> **Important** : Une fois les clés copiées, lancez `reload` (ou relancez le script de bootstrap) pour qu'elles soient prises en compte par l'agent SSH.
+
 ### 4.2 Identité Git
 Configurez votre identité pour vos commits :
 
@@ -88,27 +92,41 @@ git config --global user.email "votre.email@exemple.com"
 ```
 
 ### 4.3 Connexion SSH sans mot de passe (Vers le Serveur)
-Pour ne pas avoir à saisir votre mot de passe à chaque connexion vers le T420, vous devez autoriser votre clé SSH sur le serveur.
+Pour ne pas avoir à saisir votre mot de passe à chaque connexion vers le T420, vous devez autoriser votre clé SSH sur le serveur et configurer votre client SSH.
 
-**1. Copier la clé publique vers le serveur :**
+**1. Copie de la clé publique vers le serveur :**
+
+Si votre clé a un nom standard (`id_rsa`), utilisez simplement :
 ```bash
-# Remplacez par le nom de votre clé (ex: id_rsa.pub ou nicolas.bailleul.wrk.pub)
-ssh-copy-id -i ~/.ssh/id_rsa.pub nicolab@192.168.1.120
+ssh-copy-id nicoperso@192.168.1.15
 ```
 
-**2. Configuration automatique (Optionnel mais recommandé) :**
-Si votre clé ne s'appelle pas `id_rsa`, SSH ne la trouvera pas tout seul. Créez un fichier `config` pour lui dire quelle clé utiliser.
+Si votre clé a un nom spécifique (ex: `nicolas.bailleul.wrk`), spécifiez-la avec l'option `-i` :
+```bash
+ssh-copy-id -i ~/.ssh/nicolas.bailleul.wrk nicoperso@192.168.1.15
+```
 
-Fichier : `~/.ssh/config`
+**2. Configuration du fichier `~/.ssh/config` :**
+
+Pour simplifier la commande de connexion (ex: `ssh t420` au lieu de `ssh -i ... nicoperso@...`), créez ou éditez le fichier `~/.ssh/config` :
+
+```bash
+nano ~/.ssh/config
+```
+
+Ajoutez-y le contenu suivant :
+
 ```ssh
-Host t420 192.168.1.120
-    HostName 192.168.1.120
-    User nicolab
-    IdentityFile ~/.ssh/votre_cle_privee
+Host t420
+    HostName 192.168.1.15
+    User nicoperso
+    IdentityFile ~/.ssh/nicolas.bailleul.wrk  # Optionnel si nom standard
 ```
-*(Remplacez `votre_cle_privee` par le nom de votre fichier de clé, sans .pub)*.
 
-Désormais, `ssh t420` vous connectera instantanément.
+Vous pouvez maintenant vous connecter simplement avec :
+```bash
+ssh t420
+```
 
 ## 5. Utilisation Quotidienne
 

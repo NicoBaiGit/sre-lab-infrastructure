@@ -71,10 +71,10 @@ C'est votre tour de contrôle.
 
 *   *Action* : Installer WSL sur le T14.
 *   *Action* : Cloner ce dépôt Git.
-*   *Action* : Lancer le bootstrap (`scripts/bootstrap_client.sh`).
+*   *Action* : Lancer le bootstrap (`scripts/common/bootstrap_client.sh`).
     *   *Effet* : Ce script va **monter le NAS** (`/mnt/nas`) et configurer le shell.
 *   *Action* : Initialiser le contenu du NAS (Premier déploiement).
-    *   Commande : `./scripts/deploy_to_nas.sh`
+    *   Commande : `deploy_lab` (ou `./scripts/nas/deploy_to_nas.sh`)
     *   *Note* : À faire une seule fois pour peupler le NAS vide.
 *   *Voir* : [01. Poste de Travail](wsl.md)
 
@@ -106,7 +106,7 @@ Une fois le lab installé, voici les commandes courantes :
     git clone https://github.com/NicoBaiGit/sre-lab-infrastructure.git ~/github/sre-lab-infrastructure
 
     # 2. Lancer le bootstrap
-    ~/github/sre-lab-infrastructure/scripts/bootstrap_client.sh
+    ~/github/sre-lab-infrastructure/scripts/common/bootstrap_client.sh
     
     # 3. Recharger
     source ~/.bashrc
@@ -116,7 +116,7 @@ Une fois le lab installé, voici les commandes courantes :
 
     ```bash
     # Depuis votre poste principal
-    deploy_env
+    deploy_lab
     ```
 
 ## 🛠️ Technologies

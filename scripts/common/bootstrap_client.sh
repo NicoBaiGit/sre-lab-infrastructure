@@ -182,7 +182,7 @@ fi
 # 4. Configuration Keychain (SSH Agent)
 if command -v keychain &> /dev/null; then
     # Détection automatique des clés privées (id_rsa, id_ed25519, *.wrk, etc.)
-    SSH_KEYS=\$(find ~/.ssh -maxdepth 1 -type f -not -name "*.pub" -not -name "known_hosts" -not -name "config" -not -name "authorized_keys" 2>/dev/null)
+    SSH_KEYS=\$(find ~/.ssh -maxdepth 1 -type f -not -name "*.pub" -not -name "known_hosts*" -not -name "config" -not -name "authorized_keys" 2>/dev/null)
     
     if [ -n "\$SSH_KEYS" ]; then
         # On extrait juste les noms de fichiers
