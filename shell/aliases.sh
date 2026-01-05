@@ -38,6 +38,7 @@ alias nano="vim"
 # --- SRE Lab Utils ---
 alias bye='/mnt/nas/stop_lab.sh; exit'
 alias start_lab='/mnt/nas/start_lab.sh'
+alias stop_lab='/mnt/nas/stop_lab.sh'
 alias deploy_lab='$HOME/github/sre-lab-infrastructure/scripts/nas/deploy_to_nas.sh'
 
 # --- System ---
