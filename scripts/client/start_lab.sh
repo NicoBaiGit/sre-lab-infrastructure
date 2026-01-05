@@ -109,11 +109,52 @@ done
 echo ""
 echo "Serveur en ligne !"
 
+# 2.5 Configuration DNS Local (pour accès via URL)
+# Liste des domaines à mapper vers l'IP du serveur
+LAB_DOMAINS="argocd.local grafana.local prometheus.local loki.local"
+echo "[2.5] Vérification du DNS local (/etc/hosts)..."
+NEEDS_UPDATE=false
+
+for domain in $LAB_DOMAINS; do
+    if ! grep -q "$domain" /etc/hosts; then
+        echo "   ➕ Manquant : $domain"
+        NEEDS_UPDATE=true
+    fi
+done
+
+if [ "$NEEDS_UPDATE" = "true" ]; then
+    echo "   sudo requis pour mettre à jour /etc/hosts..."
+    for domain in $LAB_DOMAINS; do
+        if ! grep -q "$domain" /etc/hosts; then
+            # On supprime d'anciennes entrées éventuelles pour ce domaine pour éviter les doublons
+            # (Approche simpliste : ajout en fin de fichier)
+            echo "$SERVER_IP $domain" | sudo tee -a /etc/hosts > /dev/null
+        fi
+    done
+    echo "   ✅ /etc/hosts mis à jour."
+else
+    echo "   ✅ DNS déjà configurés."
+fi
+
 # 3. Session active
 echo "[3/3] Serveur prêt !"
 echo "-------------------------------------------------------"
 echo "Le serveur est allumé et accessible."
 echo "IP : $SERVER_IP"
+echo "URL : https://argocd.local (admin / <secret>)"
 echo "SSH : ssh $SSH_USER@$SERVER_IP"
 echo "-------------------------------------------------------"
+
+# 4. Connexion automatique
+echo ""
+read -p "Voulez-vous vous connecter maintenant ? (O/n) " choice
+case "$choice" in 
+  y|Y|o|O|"" ) 
+    echo "🚀 Connexion SSH..."
+    ssh "$SSH_USER@$SERVER_IP"
+    ;;
+  * ) 
+    echo "OK. Vous pouvez vous connecter plus tard avec 'ssh $SSH_USER@$SERVER_IP' ou 'ssh t420'."
+    ;;
+esac
 

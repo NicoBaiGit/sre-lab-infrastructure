@@ -10,6 +10,7 @@ nav:
   - Gestion Workstation: workstation-management.md
   - Serveur (T420): ubuntu-server.md
   - Guide du Lab: setup-lab.md
+  - Configuration Vault: vault-setup.md
   - Mémo Quotidien: daily_memo.md
 
 theme:

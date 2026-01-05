@@ -5,6 +5,14 @@ SERVER_IP="192.168.1.120"
 SSH_USER="nicolab"
 
 echo "=== Arrêt du Lab SRE ==="
+
+# Détection si on est déjà sur le serveur (évite le SSH loopback)
+if [ "$(hostname)" = "t420" ] || (hostname -I 2>/dev/null | grep -q "$SERVER_IP"); then
+    echo "💻 Exécution locale détectée. Extinction du serveur..."
+    sudo shutdown -h now
+    exit 0
+fi
+
 echo "Vérification de la présence du serveur ($SERVER_IP)..."
 
 # Check if server is reachable first to avoid long timeout

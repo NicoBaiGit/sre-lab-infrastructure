@@ -18,13 +18,22 @@ Nous utilisons **K3s**, une distribution Kubernetes légère certifiée, idéale
 
 ### Installation de K3s
 
+Nous installons K3s en mode permissif pour le fichier de configuration (`644`), ce qui permet à l'utilisateur standard de lire la configuration sans être root.
+
 ```bash
-curl -sfL https://get.k3s.io | sh -
+curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--write-kubeconfig-mode 644" sh -
+```
+
+Ensuite, configurez l'accès pour l'utilisateur courant via un lien symbolique (pour bénéficier automatiquement des mises à jour de certificats) :
+
+```bash
+mkdir -p ~/.kube
+ln -s /etc/rancher/k3s/k3s.yaml ~/.kube/config
 ```
 
 Vérification :
 ```bash
-sudo kubectl get nodes
+kubectl get nodes
 ```
 
 ## Étape 3 : GitOps avec ArgoCD
