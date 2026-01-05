@@ -44,6 +44,19 @@ Pour pratiquer le SRE moderne, nous ne déployons rien manuellement. Nous utilis
 2.  **Connecter un repo Git** contenant les manifestes Kubernetes.
 3.  **Sync** : ArgoCD déploie automatiquement les changements poussés sur Git.
 
+### Accès aux Applications (DNS & Ingress)
+
+Pour accéder aux services (ArgoCD, Grafana, etc.) via des URLs conviviales comme `https://argocd.local`, nous utilisons un Ingress Controller (Traefik, inclus dans K3s).
+
+**Configuration Client :**
+
+Le script `start_lab.sh` configure automatiquement le fichier `/etc/hosts` sur votre machine Linux/WSL.
+Cependant, si vous utilisez un navigateur sur **Windows**, vous devez ajouter manuellement l'entrée suivante dans `C:\Windows\System32\drivers\etc\hosts` (en tant qu'Administrateur) :
+
+```text
+192.168.1.120 argocd.local grafana.local prometheus.local loki.local
+```
+
 ## Étape 4 : Observabilité (Monitoring & Logging)
 
 Un SRE doit voir ce qui se passe.
