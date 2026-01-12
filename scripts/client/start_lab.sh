@@ -111,7 +111,7 @@ echo "Serveur en ligne !"
 
 # 2.5 Configuration DNS Local (pour accès via URL)
 # Liste des domaines à mapper vers l'IP du serveur
-LAB_DOMAINS="argocd.local grafana.local prometheus.local loki.local"
+LAB_DOMAINS="argocd.local grafana.local prometheus.local loki.local vault.local"
 echo "[2.5] Vérification du DNS local (/etc/hosts)..."
 NEEDS_UPDATE=false
 
