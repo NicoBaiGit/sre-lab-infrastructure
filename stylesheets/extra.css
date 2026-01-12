@@ -1,0 +1,75 @@
+:root {
+  --md-primary-fg-color:        #00BFA5; /* Teal A700 */
+  --md-primary-fg-color--light: #64FFDA;
+  --md-primary-fg-color--dark:  #009688;
+  --md-accent-fg-color:         #7C4DFF; /* Deep Purple A200 */
+}
+
+[data-md-color-scheme="slate"] {
+  --md-bg-color: #0f111a; /* Darker, bluer background */
+  --md-code-bg-color: #1a1c25;
+}
+
+/* Hero Section Styling */
+.hero-section {
+    text-align: center;
+    padding: 4rem 0;
+    background: linear-gradient(135deg, rgba(0,191,165,0.1) 0%, rgba(124,77,255,0.1) 100%);
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 800;
+    background: -webkit-linear-gradient(45deg, #64FFDA, #7C4DFF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 1rem;
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    color: var(--md-typeset-color);
+    opacity: 0.8;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Card Grid */
+.grid-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.card {
+    background: var(--md-bg-color);
+    border: 1px solid var(--md-default-fg-color--lightest);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    text-decoration: none !important;
+    color: inherit !important;
+    display: block;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    border-color: var(--md-primary-fg-color);
+}
+
+.card h3 {
+    margin-top: 0;
+    color: var(--md-primary-fg-color);
+}
+
+.card-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    display: block;
+}

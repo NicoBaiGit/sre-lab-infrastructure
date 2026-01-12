@@ -1,0 +1,1060 @@
+
+<!doctype html>
+<html lang="fr" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation du Lab SRE personnel">
+      
+      
+        <meta name="author" content="Nicolas Bailleul">
+      
+      
+        <link rel="canonical" href="https://NicoBaiGit.github.io/sre-lab-infrastructure/daily_memo/">
+      
+      
+        <link rel="prev" href="../setup-lab/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Mémo Quotidien - SRE Lab Infrastructure</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="deep-purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#memo-quotidien-sre-lab" class="md-skip">
+          Aller au contenu
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="En-tête">
+    <a href=".." title="SRE Lab Infrastructure" class="md-header__button md-logo" aria-label="SRE Lab Infrastructure" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SRE Lab Infrastructure
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Mémo Quotidien
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="deep-purple"  aria-label="Passer en mode clair"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Passer en mode clair" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="deep-purple"  aria-label="Passer en mode sombre"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Passer en mode sombre" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Rechercher" placeholder="Rechercher" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Recherche">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Effacer" aria-label="Effacer" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initialisation de la recherche
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Onglets" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Accueil
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../architecture/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Architecture
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../wsl/" class="md-tabs__link">
+          
+  
+  
+  01. Poste de Travail
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../ubuntu-server/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  02. Serveur
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../setup-lab/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  03. Lab SRE
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Mémo Quotidien
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="SRE Lab Infrastructure" class="md-nav__button md-logo" aria-label="SRE Lab Infrastructure" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    SRE Lab Infrastructure
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Accueil
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01. Poste de Travail
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    01. Poste de Travail
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wsl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration WSL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workstation-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gestion Environnement
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ubuntu-server/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02. Serveur
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../setup-lab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03. Lab SRE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mémo Quotidien
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mémo Quotidien
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table des matières">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table des matières
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#demarrage-arret" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🚀 Démarrage / Arrêt
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gestion-des-fichiers-nas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📂 Gestion des Fichiers (NAS)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mise-a-jour-de-la-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mise à jour de la Configuration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Mise à jour de la Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-mettre-a-jour-le-nas-depuis-le-poste-de-dev" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Mettre à jour le NAS (Depuis le poste de Dev)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-mettre-a-jour-un-client-wsl-serveur" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Mettre à jour un Client (WSL, Serveur...)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#liste-des-alias-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🛠️ Liste des Alias (Référence)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kubernetes-k3s" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ☸️ Kubernetes (k3s)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#en-cas-de-probleme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🆘 En cas de problème
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="memo-quotidien-sre-lab">Mémo Quotidien - SRE Lab</h1>
+<p>Ce document regroupe les commandes et informations essentielles pour l'utilisation quotidienne du Lab.</p>
+<h2 id="demarrage-arret">🚀 Démarrage / Arrêt</h2>
+<ul>
+<li><strong>Démarrer le Lab (WOL)</strong> : <code>start_lab</code> (Alias vers script WOL)</li>
+<li><strong>Arrêter le Lab</strong> : <code>bye</code> (Arrête les services et ferme la session) ou <code>stop_lab</code></li>
+<li><strong>Connexion SSH</strong> : <code>ssh user@192.168.x.x</code> (ou via alias si configuré)</li>
+</ul>
+<h2 id="gestion-des-fichiers-nas">📂 Gestion des Fichiers (NAS)</h2>
+<p>Le NAS est le point central. Il est monté sur <code>/mnt/nas</code> sur toutes les machines.
+Le montage est géré automatiquement par <code>/etc/fstab</code> (configuré par <code>bootstrap_client.sh</code>).</p>
+<ul>
+<li><strong>Credentials</strong> : Stockés dans <code>~/.smbcredentials</code> (chmod 600).</li>
+<li><strong>Alias partagés</strong> : <code>/mnt/nas/aliases.sh</code></li>
+<li><strong>Config Starship</strong> : <code>/mnt/nas/starship.toml</code></li>
+<li><strong>Scripts communs</strong> : <code>/mnt/nas/scripts/</code></li>
+</ul>
+<p>Pour mettre à jour la configuration commune :
+1.  Modifiez les fichiers dans votre repo Git local (<code>~/github/sre-lab-infrastructure</code>).
+2.  Poussez vers le NAS : <code>deploy_lab</code></p>
+<h2 id="mise-a-jour-de-la-configuration">Mise à jour de la Configuration</h2>
+<h3 id="1-mettre-a-jour-le-nas-depuis-le-poste-de-dev">1. Mettre à jour le NAS (Depuis le poste de Dev)</h3>
+<p>Si vous avez modifié des alias ou la config Starship dans le code source :
+1.  <code>git pull</code> (pour être à jour)
+2.  <code>deploy_lab</code> (alias pour <code>deploy_to_nas.sh</code>)</p>
+<h3 id="2-mettre-a-jour-un-client-wsl-serveur">2. Mettre à jour un Client (WSL, Serveur...)</h3>
+<p>Si vous voulez récupérer la dernière version des scripts ou réparer la config sur une machine :
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">cd</span><span class="w"> </span>~/github/sre-lab-infrastructure
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>git<span class="w"> </span>pull
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>./scripts/common/bootstrap_client.sh
+</code></pre></div>
+<em>(Le script est idempotent : il peut être relancé sans danger pour mettre à jour fstab, installer les nouveaux outils comme keychain, etc.)</em></p>
+<h2 id="liste-des-alias-reference">🛠️ Liste des Alias (Référence)</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Catégorie</th>
+<th style="text-align: left;">Alias</th>
+<th style="text-align: left;">Commande</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Navigation</strong></td>
+<td style="text-align: left;"><code>..</code></td>
+<td style="text-align: left;"><code>cd ..</code></td>
+<td style="text-align: left;">Remonter d'un niveau</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><code>...</code></td>
+<td style="text-align: left;"><code>cd ../..</code></td>
+<td style="text-align: left;">Remonter de 2 niveaux</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><code>ll</code></td>
+<td style="text-align: left;"><code>ls -alF</code></td>
+<td style="text-align: left;">Liste détaillée</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><code>la</code></td>
+<td style="text-align: left;"><code>ls -A</code></td>
+<td style="text-align: left;">Liste presque tout</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><code>l</code></td>
+<td style="text-align: left;"><code>ls -CF</code></td>
+<td style="text-align: left;">Liste simple</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Git</strong></td>
+<td style="text-align: left;"><code>gs</code></td>
+<td style="text-align: left;"><code>git status</code></td>
+<td style="text-align: left;">Statut</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><code>ga</code></td>
+<td style="text-align: left;"><code>git add</code></td>
+<td style="text-align: left;">Ajouter</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><code>gc</code></td>
+<td style="text-align: left;"><code>git commit</code></td>
+<td style="text-align: left;">Commiter</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><code>gp</code></td>
+<td style="text-align: left;"><code>git push</code></td>
+<td style="text-align: left;">Pousser</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><code>gl</code></td>
+<td style="text-align: left;"><code>git log ...</code></td>
+<td style="text-align: left;">Historique graphique</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Kubernetes</strong></td>
+<td style="text-align: left;"><code>k</code></td>
+<td style="text-align: left;"><code>kubectl</code></td>
+<td style="text-align: left;">Base</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><code>kcc</code></td>
+<td style="text-align: left;"><code>kubectl config current-context</code></td>
+<td style="text-align: left;">Contexte actuel</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><code>kg</code></td>
+<td style="text-align: left;"><code>kubectl get</code></td>
+<td style="text-align: left;">Get</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><code>kgp</code></td>
+<td style="text-align: left;"><code>kubectl get pods</code></td>
+<td style="text-align: left;">Pods</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><code>kgs</code></td>
+<td style="text-align: left;"><code>kubectl get services</code></td>
+<td style="text-align: left;">Services</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><code>kga</code></td>
+<td style="text-align: left;"><code>kubectl get all -A</code></td>
+<td style="text-align: left;">Tout (tous namespaces)</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><code>kd</code></td>
+<td style="text-align: left;"><code>kubectl describe</code></td>
+<td style="text-align: left;">Décrire</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><code>kl</code></td>
+<td style="text-align: left;"><code>kubectl logs</code></td>
+<td style="text-align: left;">Logs</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><code>kex</code></td>
+<td style="text-align: left;"><code>kubectl exec -it</code></td>
+<td style="text-align: left;">Shell dans pod</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Système</strong></td>
+<td style="text-align: left;"><code>update</code></td>
+<td style="text-align: left;"><code>apt update &amp;&amp; upgrade</code></td>
+<td style="text-align: left;">Mise à jour APT</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><code>nano</code></td>
+<td style="text-align: left;"><code>vim</code></td>
+<td style="text-align: left;">Force l'habitude VIM ;)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Lab SRE</strong></td>
+<td style="text-align: left;"><code>start_lab</code></td>
+<td style="text-align: left;"><code>/mnt/nas/start_lab.sh</code></td>
+<td style="text-align: left;">Démarrer (WOL)</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><code>bye</code></td>
+<td style="text-align: left;"><code>stop_lab; exit</code></td>
+<td style="text-align: left;">Arrêter et quitter</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><code>deploy_lab</code></td>
+<td style="text-align: left;"><code>.../deploy_to_nas.sh</code></td>
+<td style="text-align: left;">Déployer config sur NAS</td>
+</tr>
+</tbody>
+</table>
+<h2 id="kubernetes-k3s">☸️ Kubernetes (k3s)</h2>
+<ul>
+<li><strong>Context</strong> : <code>kuc &lt;context&gt;</code> pour changer de cluster.</li>
+<li><strong>Logs</strong> : <code>kl &lt;pod&gt;</code></li>
+<li><strong>Shell dans pod</strong> : <code>kex &lt;pod&gt; -- /bin/bash</code></li>
+</ul>
+<h2 id="en-cas-de-probleme">🆘 En cas de problème</h2>
+<ol>
+<li>
+<p><strong>Le prompt ne s'affiche pas bien ?</strong></p>
+<ul>
+<li>Vérifiez que <code>/mnt/nas</code> est bien monté.</li>
+<li>Lancez <code>source ~/.bashrc</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Les alias ne fonctionnent pas ?</strong></p>
+<ul>
+<li>Vérifiez si le fichier <code>/mnt/nas/aliases.sh</code> existe.</li>
+<li>Relancez le déploiement : <code>deploy_lab</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Problème de droits (sudo) ?</strong></p>
+<ul>
+<li>Relancez le script de bootstrap : <code>sudo ./bootstrap_client.sh</code>.</li>
+</ul>
+</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Retour en haut de la page
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "navigation.tracking", "toc.integrate", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copi\u00e9 dans le presse-papier", "clipboard.copy": "Copier dans le presse-papier", "search.result.more.one": "1 de plus sur cette page", "search.result.more.other": "# de plus sur cette page", "search.result.none": "Aucun document trouv\u00e9", "search.result.one": "1 document trouv\u00e9", "search.result.other": "# documents trouv\u00e9s", "search.result.placeholder": "Taper pour d\u00e9marrer la recherche", "search.result.term.missing": "Non trouv\u00e9", "select.version": "S\u00e9lectionner la version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+      
+        <script src="../javascripts/mermaid-init.js"></script>
+      
+    
+  </body>
+</html>
